@@ -1797,10 +1797,23 @@
             return result;
         }
 
+        // 計算頂部固定欄位高度，用於精準滾動補償（避免標題被上方 Header 與卷標籤遮擋）
+        function getHeaderOffset() {
+            let offset = 96; // app-header (54px) + scripture-quick-bar (42px)
+            const rollBar = document.getElementById('dizangRollBar');
+            if (rollBar && rollBar.classList.contains('show')) {
+                offset += 36; // dizang-roll-bar (36px)
+            }
+            return offset + 12; // 留 12px 留白美觀
+        }
+
         // 切換經典
         function switchScripture(sutraId) {
+            if (state.isAutoScrolling) {
+                stopAutoScroll();
+            }
             renderScripture(sutraId);
-            window.scrollTo({ top: 0, behavior: 'smooth' });
+            window.scrollTo({ top: 0, behavior: 'auto' });
             showToast(`已切換至《${SCRIPTURES_DATA[sutraId].title}》`);
             closeAllDrawers();
         }
@@ -1818,7 +1831,16 @@
         function scrollToRoll(rollId) {
             const el = document.getElementById(rollId);
             if (el) {
-                el.scrollIntoView({ behavior: 'smooth' });
+                const offset = getHeaderOffset();
+                const targetY = Math.max(0, el.getBoundingClientRect().top + window.scrollY - offset);
+
+                if (state.isAutoScrolling) {
+                    window.scrollTo({ top: targetY, behavior: 'auto' });
+                    lastScrollTimestamp = performance.now();
+                    scrollFractionAccumulator = 0;
+                } else {
+                    window.scrollTo({ top: targetY, behavior: 'smooth' });
+                }
                 updateRollPillActive(rollId);
             }
         }
@@ -1881,10 +1903,13 @@
         // 點擊目錄項目處理
         function handleTocClick(sutraId, chapId) {
             if (state.currentSutraId !== sutraId) {
+                if (state.isAutoScrolling) {
+                    stopAutoScroll();
+                }
                 renderScripture(sutraId);
                 setTimeout(() => {
                     jumpToChapter(chapId);
-                }, 150);
+                }, 120);
             } else {
                 jumpToChapter(chapId);
             }
@@ -1894,8 +1919,18 @@
         function jumpToChapter(chapId) {
             const el = document.getElementById(chapId);
             if (el) {
-                el.scrollIntoView({ behavior: 'smooth' });
                 closeAllDrawers();
+                const offset = getHeaderOffset();
+                const targetY = Math.max(0, el.getBoundingClientRect().top + window.scrollY - offset);
+
+                if (state.isAutoScrolling) {
+                    window.scrollTo({ top: targetY, behavior: 'auto' });
+                    lastScrollTimestamp = performance.now();
+                    scrollFractionAccumulator = 0;
+                } else {
+                    window.scrollTo({ top: targetY, behavior: 'smooth' });
+                }
+
                 const title = el.dataset.title || '章節';
                 showToast(`已跳轉至「${title}」`);
                 updateHeaderTitle(`${SCRIPTURES_DATA[state.currentSutraId].shortTitle || SCRIPTURES_DATA[state.currentSutraId].title} · ${title}`);
@@ -1957,26 +1992,38 @@
         let lastScrollTimestamp = 0;
         let scrollFractionAccumulator = 0;
 
-        // 自動平穩滾動
-        function toggleAutoScroll() {
-            state.isAutoScrolling = !state.isAutoScrolling;
+        // 停止自動滾動
+        function stopAutoScroll() {
+            if (!state.isAutoScrolling) return;
+            state.isAutoScrolling = false;
             const btn = document.getElementById('btnToggleAutoScroll');
             const icon = document.getElementById('autoScrollIcon');
             const panel = document.getElementById('autoScrollPanel');
+            if (btn) btn.classList.remove('primary');
+            if (panel) panel.classList.remove('show');
+            if (icon) icon.innerHTML = '<polygon points="5 3 19 12 5 21 5 3"></polygon>';
+            if (state.autoScrollRafId) {
+                cancelAnimationFrame(state.autoScrollRafId);
+                state.autoScrollRafId = null;
+            }
+        }
 
+        // 自動平穩滾動開關
+        function toggleAutoScroll() {
             if (state.isAutoScrolling) {
-                btn.classList.add('primary');
-                panel.classList.add('show');
-                icon.innerHTML = '<rect x="6" y="4" width="4" height="16"></rect><rect x="14" y="4" width="4" height="16"></rect>';
+                stopAutoScroll();
+                showToast('已暫停自動滾動');
+            } else {
+                state.isAutoScrolling = true;
+                const btn = document.getElementById('btnToggleAutoScroll');
+                const icon = document.getElementById('autoScrollIcon');
+                const panel = document.getElementById('autoScrollPanel');
+                if (btn) btn.classList.add('primary');
+                if (panel) panel.classList.add('show');
+                if (icon) icon.innerHTML = '<rect x="6" y="4" width="4" height="16"></rect><rect x="14" y="4" width="4" height="16"></rect>';
                 startAutoScrollLoop();
                 const speedObj = SCROLL_SPEEDS[state.scrollSpeed - 1] || SCROLL_SPEEDS[0];
                 showToast(`已開啟自動滾動：${speedObj.label}`);
-            } else {
-                btn.classList.remove('primary');
-                panel.classList.remove('show');
-                icon.innerHTML = '<polygon points="5 3 19 12 5 21 5 3"></polygon>';
-                cancelAnimationFrame(state.autoScrollRafId);
-                showToast('已暫停自動滾動');
             }
         }
 
@@ -2253,7 +2300,15 @@
             document.getElementById('searchMatchCount').textContent = count > 0 ? `共 ${count} 處` : '未找到匹配';
             const firstMark = document.querySelector('mark.sutra-highlight');
             if (firstMark) {
-                firstMark.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                const offset = getHeaderOffset() + 40;
+                const targetY = Math.max(0, firstMark.getBoundingClientRect().top + window.scrollY - offset);
+                if (state.isAutoScrolling) {
+                    window.scrollTo({ top: targetY, behavior: 'auto' });
+                    lastScrollTimestamp = performance.now();
+                    scrollFractionAccumulator = 0;
+                } else {
+                    firstMark.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                }
             }
         }
 
