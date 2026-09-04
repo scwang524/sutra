@@ -1,0 +1,1963 @@
+<!DOCTYPE html>
+<html lang="zh-Hant-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes, viewport-fit=cover">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="theme-color" content="#F5F0E6">
+    <title>靜心念誦 · 經典沉浸閱藏</title>
+    
+    <!-- 典雅古風與現代易讀字體 -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=LXGW+WenKai+TC:wght@300;400;700&family=Noto+Serif+TC:wght@400;600;700;900&family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            /* 主題一：宣紙暖杏（柔和護眼，預設） */
+            --bg-body: #F4EFE6;
+            --bg-content: #FAF7F0;
+            --bg-card: #FFFFFF;
+            --bg-card-subtle: #F0E9DC;
+            --text-main: #2A241F;
+            --text-sub: #665A4F;
+            --text-light: #94877A;
+            --border-subtle: #E5DAC9;
+            --border-highlight: #C5B39B;
+            --accent: #9A2829; /* 朱砂紅 */
+            --accent-bg: #F7EAE9;
+            --gold: #A07833; /* 沉香金 */
+            --gold-bg: #F9F3E5;
+            --shadow: 0 4px 20px rgba(60, 48, 32, 0.08);
+            --font-size: 19px;
+            --line-height: 2.1;
+            --letter-spacing: 0.05em;
+            --font-family: 'Noto Serif TC', 'Songti TC', serif;
+            --safe-top: env(safe-area-inset-top, 0px);
+            --safe-bottom: env(safe-area-inset-bottom, 0px);
+        }
+
+        /* 主題二：沉香夜月（深色夜讀） */
+        body.theme-dark {
+            --bg-body: #131211;
+            --bg-content: #1B1918;
+            --bg-card: #24211E;
+            --bg-card-subtle: #2C2824;
+            --text-main: #DCD3C6;
+            --text-sub: #A09688;
+            --text-light: #70685D;
+            --border-subtle: #302C26;
+            --border-highlight: #50483E;
+            --accent: #DA756A;
+            --accent-bg: #2D1D1B;
+            --gold: #D2B580;
+            --gold-bg: #2B251C;
+            --shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+        }
+
+        /* 主題三：青竹靜心（雅緻墨綠） */
+        body.theme-bamboo {
+            --bg-body: #EAF1E9;
+            --bg-content: #F3F8F2;
+            --bg-card: #FFFFFF;
+            --bg-card-subtle: #E1ECE0;
+            --text-main: #1B281E;
+            --text-sub: #49604E;
+            --text-light: #778F7C;
+            --border-subtle: #D2E0D0;
+            --border-highlight: #A4BFA1;
+            --accent: #29683B;
+            --accent-bg: #E4F0E7;
+            --gold: #897539;
+            --gold-bg: #F5F3E8;
+            --shadow: 0 4px 20px rgba(30, 50, 35, 0.08);
+        }
+
+        /* 主題四：素雪澄明（極簡雅白） */
+        body.theme-moonwhite {
+            --bg-body: #F3F4F6;
+            --bg-content: #FFFFFF;
+            --bg-card: #FFFFFF;
+            --bg-card-subtle: #EDEFF2;
+            --text-main: #1A1E22;
+            --text-sub: #505B66;
+            --text-light: #82909E;
+            --border-subtle: #DFE3E8;
+            --border-highlight: #BEC5CE;
+            --accent: #325074;
+            --accent-bg: #EAF0F6;
+            --gold: #90764A;
+            --gold-bg: #F6F3EC;
+            --shadow: 0 4px 20px rgba(25, 30, 35, 0.06);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            background-color: var(--bg-body);
+            color: var(--text-main);
+            font-family: var(--font-family);
+            min-height: 100vh;
+            overflow-x: hidden;
+            transition: background-color 0.3s ease, color 0.3s ease;
+            user-select: text;
+        }
+
+        /* 頂部閱讀進度條 */
+        .reading-progress-bar {
+            position: fixed;
+            top: calc(54px + var(--safe-top));
+            left: 0;
+            height: 2.5px;
+            background: linear-gradient(90deg, var(--gold), var(--accent));
+            width: 0%;
+            z-index: 102;
+            transition: width 0.1s linear;
+        }
+
+        /* 頂部主導航欄 */
+        .app-header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: calc(54px + var(--safe-top));
+            padding-top: var(--safe-top);
+            background-color: var(--bg-content);
+            border-bottom: 1px solid var(--border-subtle);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding-left: 10px;
+            padding-right: 10px;
+            z-index: 100;
+            box-shadow: 0 1px 10px rgba(0,0,0,0.03);
+            transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.3s ease;
+        }
+
+        .header-left, .header-right {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        /* 標題膠囊按鈕（顯示經典與當前章節品名） */
+        .header-title-pill {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            padding: 5px 11px;
+            background-color: var(--bg-card-subtle);
+            border: 1px solid var(--border-subtle);
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 13.5px;
+            font-weight: 600;
+            color: var(--text-main);
+            transition: all 0.2s ease;
+            max-width: 180px;
+        }
+        .header-title-pill:hover, .header-title-pill:active {
+            border-color: var(--border-highlight);
+            background-color: var(--bg-card);
+        }
+        .pill-text {
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .icon-btn {
+            background: transparent;
+            border: none;
+            outline: none;
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            color: var(--text-sub);
+            transition: all 0.2s ease;
+        }
+        .icon-btn:hover, .icon-btn:active {
+            background-color: var(--bg-card-subtle);
+            color: var(--text-main);
+        }
+        .icon-btn.active {
+            color: var(--accent);
+            background-color: var(--accent-bg);
+        }
+
+        /* 經典快捷切換欄（橫向滾動膠囊標籤） */
+        .scripture-quick-bar {
+            position: fixed;
+            top: calc(54px + var(--safe-top));
+            left: 0;
+            right: 0;
+            height: 42px;
+            background-color: var(--bg-content);
+            border-bottom: 1px solid var(--border-subtle);
+            display: flex;
+            align-items: center;
+            padding: 0 10px;
+            overflow-x: auto;
+            gap: 8px;
+            scrollbar-width: none;
+            z-index: 90;
+            transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.3s ease;
+        }
+        .scripture-quick-bar::-webkit-scrollbar {
+            display: none;
+        }
+
+        .sutra-tab-btn {
+            white-space: nowrap;
+            padding: 4px 13px;
+            border-radius: 16px;
+            border: 1px solid var(--border-subtle);
+            background: var(--bg-card-subtle);
+            color: var(--text-sub);
+            font-size: 13px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        .sutra-tab-btn.active {
+            background: var(--accent);
+            color: #FFFFFF;
+            border-color: var(--accent);
+            font-weight: 600;
+            box-shadow: 0 2px 8px rgba(154, 40, 41, 0.25);
+        }
+
+        /* 地藏經 卷上 / 卷中 / 卷下 快速切換條 */
+        .dizang-roll-bar {
+            position: fixed;
+            top: calc(96px + var(--safe-top));
+            left: 0;
+            right: 0;
+            height: 36px;
+            background-color: var(--bg-card-subtle);
+            border-bottom: 1px solid var(--border-subtle);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            z-index: 85;
+            transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.3s ease;
+        }
+        .dizang-roll-bar.show {
+            display: flex;
+        }
+
+        .roll-tab-pill {
+            font-size: 12px;
+            padding: 3px 10px;
+            border-radius: 12px;
+            cursor: pointer;
+            color: var(--text-sub);
+            border: 1px solid transparent;
+            font-weight: 500;
+            transition: all 0.2s ease;
+        }
+        .roll-tab-pill.active {
+            background-color: var(--bg-card);
+            border-color: var(--border-highlight);
+            color: var(--accent);
+            font-weight: 600;
+            box-shadow: 0 1px 4px rgba(0,0,0,0.05);
+        }
+
+        /* 經文主內容區塊 */
+        .reader-container {
+            max-width: 720px;
+            margin: 0 auto;
+            min-height: 100vh;
+            background-color: var(--bg-content);
+            box-shadow: var(--shadow);
+            padding: calc(108px + var(--safe-top)) 20px calc(110px + var(--safe-bottom)) 20px;
+            transition: padding 0.3s ease;
+        }
+        body.has-roll-bar .reader-container {
+            padding-top: calc(144px + var(--safe-top));
+        }
+
+        /* 經文標題莊嚴飾卡 */
+        .scripture-header-art {
+            text-align: center;
+            padding: 24px 8px 32px 8px;
+            border-bottom: 1px dashed var(--border-subtle);
+            margin-bottom: 28px;
+            position: relative;
+        }
+        .seal-stamp {
+            display: inline-block;
+            border: 1.5px solid var(--accent);
+            color: var(--accent);
+            padding: 2px 10px;
+            font-size: 12px;
+            font-weight: 700;
+            border-radius: 4px;
+            letter-spacing: 0.25em;
+            margin-bottom: 12px;
+            background-color: var(--accent-bg);
+        }
+        .main-sutra-title {
+            font-size: 26px;
+            font-weight: 700;
+            letter-spacing: 0.1em;
+            color: var(--text-main);
+            margin-bottom: 8px;
+            line-height: 1.35;
+        }
+        .sutra-subtitle {
+            font-size: 13.5px;
+            color: var(--text-sub);
+            margin-bottom: 14px;
+            font-weight: 400;
+            letter-spacing: 0.05em;
+        }
+        .sutra-summary-box {
+            font-size: 13px;
+            line-height: 1.8;
+            color: var(--text-light);
+            background: var(--bg-card-subtle);
+            padding: 10px 16px;
+            border-radius: 8px;
+            display: inline-block;
+            max-width: 96%;
+            text-align: left;
+            border-left: 3px solid var(--gold);
+        }
+
+        /* 章節品目錨點 */
+        .chapter-section {
+            margin-bottom: 40px;
+            position: relative;
+            scroll-margin-top: calc(140px + var(--safe-top));
+        }
+
+        .chapter-heading {
+            font-size: calc(var(--font-size) + 3px);
+            font-weight: 700;
+            color: var(--accent);
+            margin: 32px 0 18px 0;
+            padding-bottom: 8px;
+            border-bottom: 1px solid var(--border-subtle);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            letter-spacing: 0.06em;
+        }
+        .chapter-badge {
+            width: 7px;
+            height: 18px;
+            background-color: var(--accent);
+            border-radius: 3px;
+            display: inline-block;
+            flex-shrink: 0;
+        }
+
+        .roll-divider-header {
+            text-align: center;
+            margin: 44px 0 24px 0;
+            padding: 14px;
+            background: var(--bg-card-subtle);
+            border-radius: 8px;
+            border: 1px solid var(--border-subtle);
+            scroll-margin-top: calc(140px + var(--safe-top));
+        }
+        .roll-divider-header h3 {
+            font-size: 19px;
+            color: var(--gold);
+            letter-spacing: 0.15em;
+            margin-bottom: 4px;
+        }
+        .roll-divider-header p {
+            font-size: 12px;
+            color: var(--text-sub);
+        }
+
+        /* 經文段落文字排版 */
+        .sutra-p {
+            font-size: var(--font-size);
+            line-height: var(--line-height);
+            letter-spacing: var(--letter-spacing);
+            margin-bottom: 1.25em;
+            text-align: justify;
+            text-justify: inter-ideograph;
+            color: var(--text-main);
+            transition: font-size 0.2s ease, line-height 0.2s ease;
+        }
+
+        /* 偈頌/真言/讚文（中央詩律風格） */
+        .sutra-verse {
+            text-align: center;
+            color: var(--text-main);
+            font-weight: 500;
+            padding: 12px 14px;
+            margin: 18px 0;
+            background-color: var(--bg-card-subtle);
+            border-radius: 8px;
+            border-left: 2px solid var(--accent);
+            border-right: 2px solid var(--accent);
+            line-height: 2.2;
+            letter-spacing: 0.1em;
+        }
+
+        /* 罕見字/梵音注音 (Ruby) */
+        ruby {
+            ruby-position: over;
+        }
+        rt {
+            font-size: 0.58em;
+            color: var(--gold);
+            font-weight: 600;
+            letter-spacing: 0;
+        }
+        body.hide-pinyin rt {
+            display: none;
+        }
+
+        /* 古風直排模式 (Vertical Reading) */
+        .reading-vertical {
+            overflow-x: auto;
+            overflow-y: hidden;
+            height: calc(100vh - 120px);
+            max-width: 100vw;
+            padding: 14px 20px;
+            margin-top: calc(96px + var(--safe-top));
+            direction: rtl; /* 從右向左讀 */
+        }
+        .reading-vertical #scriptureContentArea {
+            writing-mode: vertical-rl;
+            text-orientation: mixed;
+            height: 100%;
+            display: inline-block;
+            direction: ltr;
+        }
+        .reading-vertical .chapter-section {
+            display: inline-block;
+            vertical-align: top;
+            height: 100%;
+            margin-left: 32px;
+            margin-bottom: 0;
+        }
+        .reading-vertical .sutra-p {
+            margin-left: 1.2em;
+            margin-bottom: 0;
+            height: 85%;
+        }
+
+        /* 右下角浮動快捷工具組 */
+        .floating-action-cluster {
+            position: fixed;
+            bottom: calc(20px + var(--safe-bottom));
+            right: 16px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            z-index: 95;
+            transition: opacity 0.3s ease, transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .fab-btn {
+            width: 46px;
+            height: 46px;
+            border-radius: 50%;
+            background-color: var(--bg-card);
+            color: var(--text-main);
+            border: 1px solid var(--border-highlight);
+            box-shadow: 0 4px 16px rgba(0,0,0,0.12);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            position: relative;
+        }
+        .fab-btn:active {
+            transform: scale(0.92);
+        }
+        .fab-btn.primary {
+            background-color: var(--accent);
+            color: #FFFFFF;
+            border-color: var(--accent);
+        }
+        .fab-badge {
+            position: absolute;
+            top: -4px;
+            right: -4px;
+            background-color: var(--gold);
+            color: #FFFFFF;
+            font-size: 10px;
+            font-weight: 700;
+            border-radius: 10px;
+            padding: 2px 5px;
+            min-width: 18px;
+            text-align: center;
+        }
+
+        /* 自動滾動控制浮動條 */
+        .autoscroll-panel {
+            position: fixed;
+            bottom: calc(16px + var(--safe-bottom));
+            left: 50%;
+            transform: translateX(-50%) translateY(140%);
+            background-color: var(--bg-card);
+            border: 1px solid var(--border-highlight);
+            border-radius: 30px;
+            padding: 6px 16px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            box-shadow: 0 6px 24px rgba(0,0,0,0.15);
+            z-index: 96;
+            transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .autoscroll-panel.show {
+            transform: translateX(-50%) translateY(0);
+        }
+        .speed-tag {
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--text-sub);
+            min-width: 30px;
+            text-align: center;
+        }
+
+        /* 專注沉浸模式（Zen Mode） */
+        body.zen-mode .app-header,
+        body.zen-mode .scripture-quick-bar,
+        body.zen-mode .dizang-roll-bar,
+        body.zen-mode .reading-progress-bar,
+        body.zen-mode .floating-action-cluster {
+            transform: translateY(-120%);
+            opacity: 0;
+            pointer-events: none;
+        }
+        body.zen-mode .reader-container {
+            padding-top: calc(24px + var(--safe-top));
+            padding-bottom: calc(30px + var(--safe-bottom));
+        }
+        .zen-exit-btn {
+            position: fixed;
+            top: calc(14px + var(--safe-top));
+            right: 14px;
+            background: rgba(40, 34, 28, 0.65);
+            backdrop-filter: blur(8px);
+            color: #FFFFFF;
+            border: 1px solid rgba(255,255,255,0.2);
+            border-radius: 20px;
+            padding: 6px 12px;
+            font-size: 12px;
+            display: none;
+            align-items: center;
+            gap: 5px;
+            z-index: 200;
+            cursor: pointer;
+        }
+        body.zen-mode .zen-exit-btn {
+            display: flex;
+        }
+
+        /* 抽屜模態框 (Drawer) */
+        .drawer-backdrop {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(4px);
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+            z-index: 150;
+        }
+        .drawer-backdrop.open {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .drawer-panel {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            max-height: 84vh;
+            background-color: var(--bg-content);
+            border-top-left-radius: 20px;
+            border-top-right-radius: 20px;
+            box-shadow: 0 -8px 32px rgba(0, 0, 0, 0.25);
+            transform: translateY(100%);
+            transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+            z-index: 160;
+            display: flex;
+            flex-direction: column;
+            padding-bottom: var(--safe-bottom);
+        }
+        .drawer-panel.open {
+            transform: translateY(0);
+        }
+
+        .drawer-handle {
+            width: 38px;
+            height: 4px;
+            background: var(--border-highlight);
+            border-radius: 2px;
+            margin: 10px auto 4px auto;
+        }
+
+        .drawer-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 12px 18px;
+            border-bottom: 1px solid var(--border-subtle);
+        }
+        .drawer-title {
+            font-size: 16px;
+            font-weight: 700;
+            color: var(--text-main);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .drawer-body {
+            overflow-y: auto;
+            padding: 16px 18px;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        /* 目錄項目 */
+        .toc-scripture-tabs {
+            display: flex;
+            gap: 6px;
+            margin-bottom: 14px;
+            overflow-x: auto;
+            scrollbar-width: none;
+        }
+        .toc-scripture-tabs::-webkit-scrollbar {
+            display: none;
+        }
+        .toc-s-pill {
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 12px;
+            background: var(--bg-card-subtle);
+            color: var(--text-sub);
+            cursor: pointer;
+            white-space: nowrap;
+            border: 1px solid var(--border-subtle);
+        }
+        .toc-s-pill.active {
+            background: var(--accent);
+            color: #FFFFFF;
+            border-color: var(--accent);
+            font-weight: 600;
+        }
+
+        .toc-roll-group {
+            margin-bottom: 18px;
+        }
+        .toc-roll-title {
+            font-size: 12.5px;
+            font-weight: 700;
+            color: var(--gold);
+            letter-spacing: 0.1em;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .toc-item {
+            padding: 11px 14px;
+            background-color: var(--bg-card);
+            border: 1px solid var(--border-subtle);
+            border-radius: 10px;
+            margin-bottom: 7px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            cursor: pointer;
+            transition: all 0.15s ease;
+        }
+        .toc-item:active {
+            background-color: var(--bg-card-subtle);
+            transform: scale(0.99);
+        }
+        .toc-item.active {
+            border-color: var(--accent);
+            background-color: var(--accent-bg);
+        }
+        .toc-item-title {
+            font-size: 14.5px;
+            font-weight: 600;
+            color: var(--text-main);
+        }
+        .toc-item.active .toc-item-title {
+            color: var(--accent);
+        }
+        .toc-item-badge {
+            font-size: 11.5px;
+            color: var(--text-light);
+            display: flex;
+            align-items: center;
+            gap: 3px;
+        }
+
+        /* 閱讀設定面板 */
+        .setting-section {
+            margin-bottom: 20px;
+        }
+        .setting-label {
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--text-sub);
+            margin-bottom: 9px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .theme-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 6px;
+        }
+        .theme-btn {
+            border: 2px solid transparent;
+            border-radius: 12px;
+            padding: 9px 4px;
+            text-align: center;
+            font-size: 12px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.2s ease;
+        }
+        .theme-btn.active {
+            border-color: var(--accent);
+            transform: scale(1.02);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        .theme-btn-ricepaper { background: #F4EFE6; color: #2A241F; border-color: #E5DAC9; }
+        .theme-btn-dark { background: #1B1918; color: #DCD3C6; border-color: #333; }
+        .theme-btn-bamboo { background: #EAF1E9; color: #1B281E; border-color: #D2E0D0; }
+        .theme-btn-moonwhite { background: #FFFFFF; color: #1A1E22; border-color: #DFE3E8; }
+
+        .btn-toggle-group {
+            display: flex;
+            background: var(--bg-card-subtle);
+            border-radius: 10px;
+            padding: 3px;
+            gap: 3px;
+        }
+        .toggle-btn {
+            flex: 1;
+            padding: 7px;
+            border: none;
+            background: transparent;
+            border-radius: 7px;
+            font-size: 13px;
+            font-weight: 500;
+            color: var(--text-sub);
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        .toggle-btn.active {
+            background: var(--bg-card);
+            color: var(--text-main);
+            font-weight: 600;
+            box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+        }
+
+        .slider-row {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .custom-slider {
+            flex: 1;
+            height: 6px;
+            -webkit-appearance: none;
+            background: var(--border-subtle);
+            border-radius: 3px;
+            outline: none;
+        }
+        .custom-slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 22px;
+            height: 22px;
+            border-radius: 50%;
+            background: var(--accent);
+            cursor: pointer;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+        }
+
+        /* 木魚專區 */
+        .muyu-container {
+            text-align: center;
+            padding: 10px 0 16px 0;
+        }
+        .muyu-wood {
+            width: 120px;
+            height: 120px;
+            margin: 0 auto;
+            cursor: pointer;
+            transition: transform 0.08s ease;
+            position: relative;
+        }
+        .muyu-wood:active {
+            transform: scale(0.92);
+        }
+        .ripple-text {
+            position: fixed;
+            font-size: 16px;
+            font-weight: 700;
+            color: var(--gold);
+            pointer-events: none;
+            animation: floatUp 0.85s ease-out forwards;
+            z-index: 999;
+            text-shadow: 0 1px 4px rgba(0,0,0,0.1);
+        }
+        @keyframes floatUp {
+            0% { opacity: 1; transform: translate(-50%, 0) scale(1); }
+            100% { opacity: 0; transform: translate(-50%, -45px) scale(1.3); }
+        }
+
+        .muyu-count-badge {
+            font-size: 32px;
+            font-weight: 700;
+            color: var(--accent);
+            font-family: var(--font-family);
+            margin: 10px 0 2px 0;
+        }
+        .muyu-sub-text {
+            font-size: 12.5px;
+            color: var(--text-sub);
+            margin-bottom: 14px;
+        }
+
+        /* 經文關鍵字搜尋欄 (浮動在頂部) */
+        .search-bar-modal {
+            display: none;
+            padding: 8px 12px;
+            background: var(--bg-card);
+            border-bottom: 1px solid var(--border-subtle);
+            align-items: center;
+            gap: 8px;
+        }
+        .search-bar-modal.show {
+            display: flex;
+        }
+        .search-input {
+            flex: 1;
+            padding: 6px 12px;
+            border-radius: 16px;
+            border: 1px solid var(--border-highlight);
+            background: var(--bg-content);
+            color: var(--text-main);
+            outline: none;
+            font-size: 14px;
+        }
+        .search-match-badge {
+            font-size: 12px;
+            color: var(--text-sub);
+            white-space: nowrap;
+        }
+        mark.sutra-highlight {
+            background-color: #FFE58F;
+            color: #262626;
+            padding: 1px 3px;
+            border-radius: 2px;
+        }
+
+        /* Toast 輕提示 */
+        .app-toast {
+            position: fixed;
+            top: calc(66px + var(--safe-top));
+            left: 50%;
+            transform: translateX(-50%) translateY(-20px);
+            background: rgba(36, 30, 26, 0.92);
+            color: #FFFFFF;
+            padding: 7px 16px;
+            border-radius: 20px;
+            font-size: 13px;
+            pointer-events: none;
+            opacity: 0;
+            transition: all 0.28s ease;
+            z-index: 300;
+            backdrop-filter: blur(4px);
+            white-space: nowrap;
+            box-shadow: 0 4px 14px rgba(0,0,0,0.15);
+        }
+        .app-toast.show {
+            opacity: 1;
+            transform: translateX(-50%) translateY(0);
+        }
+    </style>
+</head>
+<body class="theme-ricepaper has-roll-bar">
+    <!-- 頂部進度條 -->
+    <div class="reading-progress-bar" id="readingProgressBar"></div>
+
+    <!-- 頂部主導航欄 -->
+    <header class="app-header" id="appHeader">
+        <div class="header-left">
+            <button class="icon-btn" id="btnOpenMenu" title="打開目錄" onclick="openTocDrawer()">
+                <svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <line x1="3" y1="12" x2="21" y2="12"></line>
+                    <line x1="3" y1="6" x2="21" y2="6"></line>
+                    <line x1="3" y1="18" x2="21" y2="18"></line>
+                </svg>
+            </button>
+            <div class="header-title-pill" onclick="openTocDrawer()">
+                <span style="color:var(--accent);">❖</span>
+                <span class="pill-text" id="headerTitleText">地藏菩薩本願經</span>
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <polyline points="6 9 12 15 18 9"></polyline>
+                </svg>
+            </div>
+        </div>
+
+        <div class="header-right">
+            <!-- 搜尋關鍵字 -->
+            <button class="icon-btn" onclick="toggleSearchBar()" title="檢索經文">
+                <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="11" cy="11" r="8"></circle>
+                    <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                </svg>
+            </button>
+            <!-- 敲木魚小按鈕 -->
+            <button class="icon-btn" onclick="openMuyuModal()" title="電子木魚">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="12" cy="12" r="9"></circle>
+                    <path d="M9 10h.01M15 10h.01M9.5 15a3.5 3.5 0 0 0 5 0"></path>
+                </svg>
+            </button>
+            <!-- 閱讀設定按鈕 -->
+            <button class="icon-btn" id="btnOpenSettings" title="閱讀設定" onclick="openSettingsDrawer()">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <polyline points="4 7 4 4 20 4 20 7"></polyline>
+                    <line x1="9" y1="20" x2="15" y2="20"></line>
+                    <line x1="12" y1="4" x2="12" y2="20"></line>
+                </svg>
+            </button>
+            <!-- 專注模式按鈕 -->
+            <button class="icon-btn" id="btnToggleZen" title="專注沉浸模式" onclick="toggleZenMode()">
+                <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                    <circle cx="12" cy="12" r="3"></circle>
+                </svg>
+            </button>
+        </div>
+    </header>
+
+    <!-- 4部經典快捷切換欄 -->
+    <div class="scripture-quick-bar" id="scriptureQuickBar">
+        <button class="sutra-tab-btn active" data-sutra="dizang" onclick="switchScripture('dizang')">
+            <span>📜</span> 地藏菩薩本願經
+        </button>
+        <button class="sutra-tab-btn" data-sutra="xinjing" onclick="switchScripture('xinjing')">
+            <span>🪷</span> 般若波羅蜜多心經
+        </button>
+        <button class="sutra-tab-btn" data-sutra="qingjing" onclick="switchScripture('qingjing')">
+            <span>☯</span> 太上老君常清靜經
+        </button>
+        <button class="sutra-tab-btn" data-sutra="mile" onclick="switchScripture('mile')">
+            <span>✨</span> 彌勒救苦真經
+        </button>
+    </div>
+
+    <!-- 地藏經 卷上 / 卷中 / 卷下 快速切換條 -->
+    <div class="dizang-roll-bar show" id="dizangRollBar">
+        <span class="roll-tab-pill active" id="pill-juan-shang" onclick="scrollToRoll('juan-shang')">卷上（一至四品）</span>
+        <span class="roll-tab-pill" id="pill-juan-zhong" onclick="scrollToRoll('juan-zhong')">卷中（五至九品）</span>
+        <span class="roll-tab-pill" id="pill-juan-xia" onclick="scrollToRoll('juan-xia')">卷下（十至十三品）</span>
+    </div>
+
+    <!-- 經文搜尋條 -->
+    <div class="search-bar-modal" id="searchBarModal">
+        <input type="text" class="search-input" id="searchKeyword" placeholder="搜尋經文字詞（如：菩薩、地獄、清靜、智慧）..." onkeydown="if(event.key==='Enter') executeSearch()">
+        <button class="icon-btn" onclick="executeSearch()" title="開始搜尋">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"></polyline></svg>
+        </button>
+        <span class="search-match-badge" id="searchMatchCount"></span>
+        <button class="icon-btn" onclick="toggleSearchBar()" title="關閉搜尋">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+        </button>
+    </div>
+
+    <!-- 沉浸專注退出按鈕 -->
+    <button class="zen-exit-btn" id="zenExitBtn" onclick="toggleZenMode()">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polyline points="15 3 21 3 21 9"></polyline>
+            <polyline points="9 21 3 21 3 15"></polyline>
+            <line x1="21" y1="3" x2="14" y2="10"></line>
+            <line x1="3" y1="21" x2="10" y2="14"></line>
+        </svg>
+        退出專注
+    </button>
+
+    <!-- 經文主內容容器 -->
+    <main class="reader-container" id="readerContainer">
+        <div id="scriptureContentArea"></div>
+    </main>
+
+    <!-- 右下角浮動快捷工具組 -->
+    <div class="floating-action-cluster" id="floatingActions">
+        <!-- 目錄快捷跳轉按鈕 -->
+        <button class="fab-btn" onclick="openTocDrawer()" title="經文目錄">
+            <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <line x1="8" y1="6" x2="21" y2="6"></line>
+                <line x1="8" y1="12" x2="21" y2="12"></line>
+                <line x1="8" y1="18" x2="21" y2="18"></line>
+                <line x1="3" y1="6" x2="3.01" y2="6"></line>
+                <line x1="3" y1="12" x2="3.01" y2="12"></line>
+                <line x1="3" y1="18" x2="3.01" y2="18"></line>
+            </svg>
+        </button>
+
+        <!-- 自動滾動按鈕 -->
+        <button class="fab-btn" id="btnToggleAutoScroll" onclick="toggleAutoScroll()" title="自動滾動">
+            <svg id="autoScrollIcon" width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <polygon points="5 3 19 12 5 21 5 3"></polygon>
+            </svg>
+        </button>
+
+        <!-- 敲木魚計數主按鈕 -->
+        <button class="fab-btn primary" onclick="quickTapMuyu(event)" title="敲木魚">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="12" cy="12" r="9"></circle>
+                <path d="M9 10h.01M15 10h.01M9.5 15a3.5 3.5 0 0 0 5 0"></path>
+            </svg>
+            <span class="fab-badge" id="floatingMuyuBadge">0</span>
+        </button>
+    </div>
+
+    <!-- 自動滾動速度控制面板 -->
+    <div class="autoscroll-panel" id="autoScrollPanel">
+        <button class="icon-btn" onclick="adjustScrollSpeed(-1)" title="減速">
+            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+        </button>
+        <span class="speed-tag" id="scrollSpeedText">速 2</span>
+        <button class="icon-btn" onclick="adjustScrollSpeed(1)" title="加速">
+            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+        </button>
+        <button class="icon-btn" onclick="toggleAutoScroll()" title="關閉" style="color:var(--accent);">
+            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="6" y="4" width="4" height="16"></rect><rect x="14" y="4" width="4" height="16"></rect></svg>
+        </button>
+    </div>
+
+    <!-- 抽屜遮罩 -->
+    <div class="drawer-backdrop" id="drawerBackdrop" onclick="closeAllDrawers()"></div>
+
+    <!-- 1. 目錄抽屜 (TOC Drawer) -->
+    <div class="drawer-panel" id="tocDrawer">
+        <div class="drawer-handle"></div>
+        <div class="drawer-header">
+            <div class="drawer-title">
+                <span>📖</span> 經文品節目錄
+            </div>
+            <button class="icon-btn" onclick="closeAllDrawers()">
+                <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+            </button>
+        </div>
+        <div class="drawer-body">
+            <!-- 抽屜內切換經典標籤 -->
+            <div class="toc-scripture-tabs" id="tocScriptureTabs">
+                <span class="toc-s-pill active" onclick="switchScriptureInDrawer('dizang')">地藏菩薩本願經</span>
+                <span class="toc-s-pill" onclick="switchScriptureInDrawer('xinjing')">心經</span>
+                <span class="toc-s-pill" onclick="switchScriptureInDrawer('qingjing')">太上清淨經</span>
+                <span class="toc-s-pill" onclick="switchScriptureInDrawer('mile')">彌勒救苦真經</span>
+            </div>
+            <!-- 目錄項目清單 -->
+            <div id="tocListContainer"></div>
+        </div>
+    </div>
+
+    <!-- 2. 閱讀設定抽屜 (Settings Drawer) -->
+    <div class="drawer-panel" id="settingsDrawer">
+        <div class="drawer-handle"></div>
+        <div class="drawer-header">
+            <div class="drawer-title">
+                <span>⚙</span> 閱讀版面偏好
+            </div>
+            <button class="icon-btn" onclick="closeAllDrawers()">
+                <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+            </button>
+        </div>
+        <div class="drawer-body">
+            <!-- 主題風格 -->
+            <div class="setting-section">
+                <div class="setting-label">閱讀主題配色</div>
+                <div class="theme-grid">
+                    <button class="theme-btn theme-btn-ricepaper active" onclick="setTheme('theme-ricepaper')">宣紙暖杏</button>
+                    <button class="theme-btn theme-btn-dark" onclick="setTheme('theme-dark')">沉香古檀</button>
+                    <button class="theme-btn theme-btn-bamboo" onclick="setTheme('theme-bamboo')">青竹靜心</button>
+                    <button class="theme-btn theme-btn-moonwhite" onclick="setTheme('theme-moonwhite')">素雪澄明</button>
+                </div>
+            </div>
+
+            <!-- 字體大小 -->
+            <div class="setting-section">
+                <div class="setting-label" style="justify-content:space-between;">
+                    <span>字體大小</span>
+                    <span id="fontSizeDisplay" style="color:var(--accent); font-weight:700;">19px</span>
+                </div>
+                <div class="slider-row">
+                    <span style="font-size:13px;">小</span>
+                    <input type="range" class="custom-slider" id="fontSizeSlider" min="15" max="28" step="1" value="19" oninput="changeFontSize(this.value)">
+                    <span style="font-size:20px; font-weight:700;">大</span>
+                </div>
+            </div>
+
+            <!-- 行距舒適度 -->
+            <div class="setting-section">
+                <div class="setting-label">行間距舒適度</div>
+                <div class="btn-toggle-group">
+                    <button class="toggle-btn" id="lh-18" onclick="setLineHeight('1.8')">緊湊 (1.8)</button>
+                    <button class="toggle-btn active" id="lh-21" onclick="setLineHeight('2.1')">舒適 (2.1)</button>
+                    <button class="toggle-btn" id="lh-24" onclick="setLineHeight('2.4')">寬敞 (2.4)</button>
+                </div>
+            </div>
+
+            <!-- 排版方向 (橫排 / 直排) -->
+            <div class="setting-section">
+                <div class="setting-label">閱讀排版方向</div>
+                <div class="btn-toggle-group">
+                    <button class="toggle-btn active" id="layout-horizontal" onclick="setLayout('horizontal')">橫排現代閱讀</button>
+                    <button class="toggle-btn" id="layout-vertical" onclick="setLayout('vertical')">古風直排卷軸</button>
+                </div>
+            </div>
+
+            <!-- 字體風格 -->
+            <div class="setting-section">
+                <div class="setting-label">典籍字體風格</div>
+                <div class="btn-toggle-group">
+                    <button class="toggle-btn active" id="font-serif" onclick="setFontFamily('serif')">思源宋體</button>
+                    <button class="toggle-btn" id="font-kaiti" onclick="setFontFamily('kaiti')">霞鶩文楷</button>
+                    <button class="toggle-btn" id="font-sans" onclick="setFontFamily('sans')">現代黑體</button>
+                </div>
+            </div>
+
+            <!-- 輔助護眼功能 -->
+            <div class="setting-section">
+                <div class="setting-label">輔助護眼與念誦</div>
+                <div style="display:flex; flex-direction:column; gap:12px;">
+                    <label style="display:flex; align-items:center; justify-content:space-between; font-size:14px; cursor:pointer;">
+                        <span>誦經保持螢幕常亮（不滅屏）</span>
+                        <input type="checkbox" id="wakeLockCheckbox" onchange="toggleWakeLock(this.checked)" style="width:19px; height:19px; accent-color:var(--accent);">
+                    </label>
+                    <label style="display:flex; align-items:center; justify-content:space-between; font-size:14px; cursor:pointer;">
+                        <span>顯示罕見字與梵語注音標記</span>
+                        <input type="checkbox" id="pinyinCheckbox" checked onchange="togglePinyin(this.checked)" style="width:19px; height:19px; accent-color:var(--accent);">
+                    </label>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 3. 電子木魚與音律抽屜 (Muyu Modal) -->
+    <div class="drawer-panel" id="muyuDrawer">
+        <div class="drawer-handle"></div>
+        <div class="drawer-header">
+            <div class="drawer-title">
+                <span>🪷</span> 靜心電子木魚 · 頌缽
+            </div>
+            <button class="icon-btn" onclick="closeAllDrawers()">
+                <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+            </button>
+        </div>
+        <div class="drawer-body">
+            <div class="muyu-container">
+                <!-- 互動木魚按鈕 -->
+                <div class="muyu-wood" id="muyuClickable" onclick="tapBigMuyu(event)">
+                    <svg viewBox="0 0 100 100" width="100%" height="100%">
+                        <circle cx="50" cy="50" r="46" fill="var(--bg-card-subtle)" stroke="var(--gold)" stroke-width="2.5"/>
+                        <path d="M 22 52 C 22 36, 42 22, 64 24 C 80 25, 88 40, 84 56 C 80 72, 60 84, 38 82 C 26 80, 22 68, 22 52 Z" fill="var(--gold)" opacity="0.88"/>
+                        <path d="M 32 50 C 44 45, 60 48, 70 56" stroke="var(--bg-content)" stroke-width="4.5" stroke-linecap="round" fill="none"/>
+                        <circle cx="40" cy="38" r="4.5" fill="var(--bg-content)"/>
+                    </svg>
+                </div>
+
+                <div class="muyu-count-badge" id="muyuCountDisplay">0</div>
+                <div class="muyu-sub-text">今日持誦敲擊次數</div>
+
+                <div style="display:flex; justify-content:center; gap:10px; margin-top:14px; flex-wrap:wrap;">
+                    <!-- 敲磬 / 頌缽按鈕 -->
+                    <button class="sutra-tab-btn" onclick="playSingingBowlSound()">
+                        <span>🔔</span> 輕敲銅磬 (清心)
+                    </button>
+                    <!-- 自動定速敲木魚 -->
+                    <button class="sutra-tab-btn" id="btnAutoMuyu" onclick="toggleAutoMuyu()">
+                        <span>⏱</span> 定速伴念 (每1.5秒)
+                    </button>
+                    <!-- 重置計數 -->
+                    <button class="sutra-tab-btn" onclick="resetMuyuCount()">
+                        <span>↺</span> 重設今日功德
+                    </button>
+                </div>
+
+                <div style="margin-top:20px; padding:12px; background:var(--bg-card-subtle); border-radius:10px; font-size:12.5px; color:var(--text-sub); line-height:1.7;">
+                    💡 提示：在誦經頁面中，點擊右下角紅色木魚球即可隨誦隨敲，累計念誦功德並發出清脆迴響。
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 輕提示 Toast -->
+    <div class="app-toast" id="appToast">已為您恢復上次進度</div>
+
+    <!-- 經文資料庫 -->
+    <script src="scriptures_data.js"></script>
+
+    <!-- 應用核心互動腳本 -->
+    <script>
+        const state = {
+            currentSutraId: 'dizang',
+            currentChapterTitle: '',
+            drawerSutraId: 'dizang',
+            theme: 'theme-ricepaper',
+            fontSize: 19,
+            lineHeight: 2.1,
+            layout: 'horizontal',
+            fontFamily: 'serif',
+            isZenMode: false,
+            isAutoScrolling: false,
+            scrollSpeed: 2,
+            autoScrollRafId: null,
+            muyuCount: 0,
+            autoMuyuTimer: null,
+            wakeLock: null,
+            showPinyin: true
+        };
+
+        // Web Audio API 禪意純音合成器
+        let audioCtx = null;
+        function getAudioContext() {
+            if (!audioCtx) {
+                const AudioContext = window.AudioContext || window.webkitAudioContext;
+                audioCtx = new AudioContext();
+            }
+            if (audioCtx.state === 'suspended') {
+                audioCtx.resume();
+            }
+            return audioCtx;
+        }
+
+        // 合成木魚音效
+        function playWoodenFishSound() {
+            try {
+                const ctx = getAudioContext();
+                const now = ctx.currentTime;
+
+                const osc = ctx.createOscillator();
+                const gain = ctx.createGain();
+                const filter = ctx.createBiquadFilter();
+
+                osc.type = 'triangle';
+                osc.frequency.setValueAtTime(620, now);
+                osc.frequency.exponentialRampToValueAtTime(140, now + 0.12);
+
+                filter.type = 'bandpass';
+                filter.frequency.setValueAtTime(800, now);
+                filter.Q.setValueAtTime(4.0, now);
+
+                gain.gain.setValueAtTime(0.9, now);
+                gain.gain.exponentialRampToValueAtTime(0.001, now + 0.16);
+
+                osc.connect(filter);
+                filter.connect(gain);
+                gain.connect(ctx.destination);
+
+                osc.start(now);
+                osc.stop(now + 0.18);
+
+                if (navigator.vibrate) {
+                    navigator.vibrate(12);
+                }
+            } catch (e) {
+                console.warn('Audio error:', e);
+            }
+        }
+
+        // 合成銅磬/頌缽長泛音
+        function playSingingBowlSound() {
+            try {
+                const ctx = getAudioContext();
+                const now = ctx.currentTime;
+
+                const freqs = [432, 864, 1296, 1728];
+                const weights = [0.6, 0.25, 0.1, 0.05];
+
+                freqs.forEach((f, i) => {
+                    const osc = ctx.createOscillator();
+                    const gain = ctx.createGain();
+
+                    osc.type = 'sine';
+                    osc.frequency.setValueAtTime(f, now);
+
+                    gain.gain.setValueAtTime(weights[i] * 0.7, now);
+                    gain.gain.exponentialRampToValueAtTime(0.0001, now + 3.5);
+
+                    osc.connect(gain);
+                    gain.connect(ctx.destination);
+
+                    osc.start(now);
+                    osc.stop(now + 3.6);
+                });
+
+                showToast('🔔 銅磬引罄 · 淨心沉香');
+            } catch (e) {
+                console.warn('Bowl sound error:', e);
+            }
+        }
+
+        // 頁面初始化
+        window.addEventListener('DOMContentLoaded', () => {
+            loadPreferences();
+            renderScripture(state.currentSutraId);
+            setupScrollListener();
+            setupIntersectionObserver();
+        });
+
+        // 載入偏好設定
+        function loadPreferences() {
+            try {
+                const savedSutra = localStorage.getItem('sutra_current_id');
+                if (savedSutra && SCRIPTURES_DATA[savedSutra]) {
+                    state.currentSutraId = savedSutra;
+                    state.drawerSutraId = savedSutra;
+                }
+
+                const savedTheme = localStorage.getItem('sutra_theme');
+                if (savedTheme) setTheme(savedTheme, false);
+
+                const savedSize = localStorage.getItem('sutra_fontsize');
+                if (savedSize) changeFontSize(savedSize, false);
+
+                const savedLh = localStorage.getItem('sutra_lineheight');
+                if (savedLh) setLineHeight(savedLh, false);
+
+                const savedLayout = localStorage.getItem('sutra_layout');
+                if (savedLayout) setLayout(savedLayout, false);
+
+                const savedFont = localStorage.getItem('sutra_font');
+                if (savedFont) setFontFamily(savedFont, false);
+
+                const savedMuyu = localStorage.getItem('sutra_muyu_count');
+                if (savedMuyu) {
+                    state.muyuCount = parseInt(savedMuyu, 10) || 0;
+                    updateMuyuDisplay();
+                }
+
+                // 恢復歷史滾動位置
+                setTimeout(() => {
+                    const savedScroll = localStorage.getItem('sutra_scroll_' + state.currentSutraId);
+                    if (savedScroll && parseInt(savedScroll, 10) > 20) {
+                        window.scrollTo({ top: parseInt(savedScroll, 10), behavior: 'smooth' });
+                        showToast('已為您恢復閱讀進度');
+                    }
+                }, 350);
+
+            } catch (e) {
+                console.error('Failed to load preferences:', e);
+            }
+        }
+
+        // 渲染經文主體
+        function renderScripture(sutraId) {
+            const data = SCRIPTURES_DATA[sutraId];
+            if (!data) return;
+
+            state.currentSutraId = sutraId;
+            state.drawerSutraId = sutraId;
+            localStorage.setItem('sutra_current_id', sutraId);
+
+            // 更新 Header 標題與快捷導航
+            updateHeaderTitle(data.title);
+
+            document.querySelectorAll('.sutra-tab-btn').forEach(btn => {
+                btn.classList.toggle('active', btn.dataset.sutra === sutraId);
+            });
+
+            // 地藏經特有的卷導航條
+            const rollBar = document.getElementById('dizangRollBar');
+            if (sutraId === 'dizang') {
+                rollBar.classList.add('show');
+                document.body.classList.add('has-roll-bar');
+            } else {
+                rollBar.classList.remove('show');
+                document.body.classList.remove('has-roll-bar');
+            }
+
+            // 組裝 HTML
+            let html = `
+                <div class="scripture-header-art">
+                    <div class="seal-stamp">${data.category || '殊勝經典'}</div>
+                    <h1 class="main-sutra-title">${data.title}</h1>
+                    <div class="sutra-subtitle">${data.subtitle || ''}</div>
+                    <div class="sutra-summary-box">${data.summary || '至心持誦，得不可思議功德利益。'}</div>
+                </div>
+            `;
+
+            if (sutraId === 'dizang') {
+                // 地藏經三卷
+                data.rolls.forEach((roll, rIdx) => {
+                    html += `
+                        <div class="roll-divider-header" id="${roll.id}">
+                            <h3>❖ ${roll.title} ❖</h3>
+                            <p>${roll.desc}</p>
+                        </div>
+                    `;
+
+                    roll.chapters.forEach(chap => {
+                        html += `
+                            <section class="chapter-section" id="${chap.id}" data-title="${chap.title}" data-roll="${roll.id}">
+                                <h2 class="chapter-heading">
+                                    <span class="chapter-badge"></span>
+                                    <span>${chap.title}</span>
+                                </h2>
+                                <div class="chapter-body">
+                                    ${renderParagraphs(chap.paragraphs)}
+                                </div>
+                            </section>
+                        `;
+                    });
+                });
+            } else {
+                // 其他經典
+                data.chapters.forEach(chap => {
+                    html += `
+                        <section class="chapter-section" id="${chap.id}" data-title="${chap.title}">
+                            <h2 class="chapter-heading">
+                                <span class="chapter-badge"></span>
+                                <span>${chap.title}</span>
+                            </h2>
+                            <div class="chapter-body">
+                                ${renderParagraphs(chap.paragraphs)}
+                            </div>
+                        </section>
+                    `;
+                });
+            }
+
+            document.getElementById('scriptureContentArea').innerHTML = html;
+
+            // 重新刷新目錄
+            renderTocDrawer();
+
+            // 重新初始化 IntersectionObserver 監聽
+            setTimeout(setupIntersectionObserver, 200);
+        }
+
+        // 更新 Header 標題顯示
+        function updateHeaderTitle(title) {
+            document.getElementById('headerTitleText').textContent = title;
+        }
+
+        // 渲染段落並處理注音
+        function renderParagraphs(paragraphs) {
+            return paragraphs.map(p => {
+                const isVerse = p.includes('\n') || p.includes('南無') || p.startsWith('【') || (p.length < 55 && !p.endsWith('。'));
+                let formatted = p.replace(/\n/g, '<br>');
+                formatted = enrichWithPinyin(formatted);
+
+                if (isVerse) {
+                    return `<div class="sutra-verse sutra-p">${formatted}</div>`;
+                } else {
+                    return `<p class="sutra-p">${formatted}</p>`;
+                }
+            }).join('');
+        }
+
+        // 生僻字與關鍵梵音注音清單
+        function enrichWithPinyin(text) {
+            const annotations = [
+                { word: '忉利', ruby: '<ruby>忉<rt>ㄉㄠ</rt></ruby><ruby>利<rt>ㄌㄧˋ</rt></ruby>' },
+                { word: '摩訶', ruby: '<ruby>摩<rt>ㄇㄛˊ</rt></ruby><ruby>訶<rt>ㄏㄜ</rt></ruby>' },
+                { word: '揭諦', ruby: '<ruby>揭<rt>ㄐㄧㄝ</rt></ruby><ruby>諦<rt>ㄉㄧˋ</rt></ruby>' },
+                { word: '波羅蜜多', ruby: '<ruby>波<rt>ㄅㄛ</rt></ruby><ruby>羅<rt>ㄌㄨㄛˊ</rt></ruby><ruby>蜜<rt>ㄇㄧˋ</rt></ruby><ruby>多<rt>ㄉㄨㄛ</rt></ruby>' },
+                { word: '菩提娑婆訶', ruby: '<ruby>菩<rt>ㄆㄨˊ</rt></ruby><ruby>提<rt>ㄊㄧˊ</rt></ruby><ruby>娑<rt>ㄙㄨㄛ</rt></ruby><ruby>婆<rt>ㄆㄛˊ</rt></ruby><ruby>訶<rt>ㄏㄜ</rt></ruby>' },
+                { word: '阿耨多羅', ruby: '<ruby>阿<rt>ㄚ</rt></ruby><ruby>耨<rt>ㄋㄡˋ</rt></ruby><ruby>多<rt>ㄉㄨㄛ</rt></ruby><ruby>羅<rt>ㄌㄨㄛˊ</rt></ruby>' },
+                { word: '三藐三菩提', ruby: '<ruby>三<rt>ㄙㄢ</rt></ruby><ruby>藐<rt>ㄇㄧㄠˇ</rt></ruby><ruby>三<rt>ㄙㄢ</rt></ruby><ruby>菩<rt>ㄆㄨˊ</rt></ruby><ruby>提<rt>ㄊㄧˊ</rt></ruby>' },
+                { word: '菩提薩埵', ruby: '<ruby>菩<rt>ㄆㄨˊ</rt></ruby><ruby>提<rt>ㄊㄧˊ</rt></ruby><ruby>薩<rt>ㄙㄚˋ</rt></ruby><ruby>埵<rt>ㄉㄨㄛˇ</rt></ruby>' },
+                { word: '栴檀', ruby: '<ruby>栴<rt>ㄓㄢ</rt></ruby><ruby>檀<rt>ㄊㄢˊ</rt></ruby>' },
+                { word: '龕室', ruby: '<ruby>龕<rt>ㄎㄢ</rt></ruby>室' },
+                { word: '勅諸', ruby: '<ruby>勅<rt>ㄔˋ</rt></ruby>諸' },
+                { word: '雨無量香華', ruby: '<ruby>雨<rt>ㄩˋ</rt></ruby>無量香華' }
+            ];
+
+            let result = text;
+            annotations.forEach(item => {
+                result = result.split(item.word).join(item.ruby);
+            });
+            return result;
+        }
+
+        // 切換經典
+        function switchScripture(sutraId) {
+            renderScripture(sutraId);
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+            showToast(`已切換至《${SCRIPTURES_DATA[sutraId].title}》`);
+            closeAllDrawers();
+        }
+
+        // 抽屜內切換經典目錄分頁
+        function switchScriptureInDrawer(sutraId) {
+            state.drawerSutraId = sutraId;
+            document.querySelectorAll('.toc-s-pill').forEach(p => {
+                p.classList.toggle('active', p.getAttribute('onclick').includes(sutraId));
+            });
+            renderTocDrawer();
+        }
+
+        // 快速跳轉至地藏經某卷
+        function scrollToRoll(rollId) {
+            const el = document.getElementById(rollId);
+            if (el) {
+                el.scrollIntoView({ behavior: 'smooth' });
+                updateRollPillActive(rollId);
+            }
+        }
+
+        function updateRollPillActive(rollId) {
+            document.querySelectorAll('.roll-tab-pill').forEach(pill => {
+                pill.classList.toggle('active', pill.id === 'pill-' + rollId);
+            });
+        }
+
+        // 渲染目錄抽屜清單
+        function renderTocDrawer() {
+            const sutraId = state.drawerSutraId || state.currentSutraId;
+            const data = SCRIPTURES_DATA[sutraId];
+            const container = document.getElementById('tocListContainer');
+            if (!container || !data) return;
+
+            let html = '';
+
+            if (sutraId === 'dizang') {
+                data.rolls.forEach(roll => {
+                    html += `
+                        <div class="toc-roll-group">
+                            <div class="toc-roll-title">
+                                <span>✦</span> ${roll.title}（${roll.desc}）
+                            </div>
+                    `;
+                    roll.chapters.forEach(chap => {
+                        const isCur = (state.currentSutraId === 'dizang' && state.currentChapterTitle === chap.title);
+                        html += `
+                            <div class="toc-item ${isCur ? 'active' : ''}" onclick="handleTocClick('${sutraId}', '${chap.id}')">
+                                <div>
+                                    <div class="toc-item-title">${chap.title}</div>
+                                </div>
+                                <span class="toc-item-badge">點選跳轉 ➔</span>
+                            </div>
+                        `;
+                    });
+                    html += `</div>`;
+                });
+            } else {
+                html += `<div class="toc-roll-group">`;
+                data.chapters.forEach(chap => {
+                    const isCur = (state.currentSutraId === sutraId && state.currentChapterTitle === chap.title);
+                    html += `
+                        <div class="toc-item ${isCur ? 'active' : ''}" onclick="handleTocClick('${sutraId}', '${chap.id}')">
+                            <div>
+                                <div class="toc-item-title">${chap.title}</div>
+                            </div>
+                            <span class="toc-item-badge">點選跳轉 ➔</span>
+                        </div>
+                    `;
+                });
+                html += `</div>`;
+            }
+
+            container.innerHTML = html;
+        }
+
+        // 點擊目錄項目處理
+        function handleTocClick(sutraId, chapId) {
+            if (state.currentSutraId !== sutraId) {
+                renderScripture(sutraId);
+                setTimeout(() => {
+                    jumpToChapter(chapId);
+                }, 150);
+            } else {
+                jumpToChapter(chapId);
+            }
+        }
+
+        // 跳轉到具體章節品名
+        function jumpToChapter(chapId) {
+            const el = document.getElementById(chapId);
+            if (el) {
+                el.scrollIntoView({ behavior: 'smooth' });
+                closeAllDrawers();
+                const title = el.dataset.title || '章節';
+                showToast(`已跳轉至「${title}」`);
+                updateHeaderTitle(`${SCRIPTURES_DATA[state.currentSutraId].shortTitle || SCRIPTURES_DATA[state.currentSutraId].title} · ${title}`);
+            }
+        }
+
+        // 滾動監聽（進度條與歷史儲存）
+        function setupScrollListener() {
+            let scrollTimer = null;
+            window.addEventListener('scroll', () => {
+                const totalHeight = document.documentElement.scrollHeight - window.innerHeight;
+                if (totalHeight > 0) {
+                    const percent = Math.min(100, Math.max(0, (window.scrollY / totalHeight) * 100));
+                    document.getElementById('readingProgressBar').style.width = percent + '%';
+                }
+
+                clearTimeout(scrollTimer);
+                scrollTimer = setTimeout(() => {
+                    localStorage.setItem('sutra_scroll_' + state.currentSutraId, window.scrollY);
+                }, 500);
+            }, { passive: true });
+        }
+
+        // IntersectionObserver 追蹤當前卷與品目
+        let sectionObserver = null;
+        function setupIntersectionObserver() {
+            if (sectionObserver) sectionObserver.disconnect();
+
+            sectionObserver = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        const rollId = entry.target.dataset.roll;
+                        const chapTitle = entry.target.dataset.title;
+                        if (rollId) {
+                            updateRollPillActive(rollId);
+                        }
+                        if (chapTitle) {
+                            state.currentChapterTitle = chapTitle;
+                            const short = SCRIPTURES_DATA[state.currentSutraId].shortTitle || SCRIPTURES_DATA[state.currentSutraId].title;
+                            updateHeaderTitle(`${short} · ${chapTitle}`);
+                        }
+                    }
+                });
+            }, { rootMargin: '-15% 0px -75% 0px' });
+
+            document.querySelectorAll('.chapter-section').forEach(sec => sectionObserver.observe(sec));
+        }
+
+        // 自動平穩滾動
+        function toggleAutoScroll() {
+            state.isAutoScrolling = !state.isAutoScrolling;
+            const btn = document.getElementById('btnToggleAutoScroll');
+            const icon = document.getElementById('autoScrollIcon');
+            const panel = document.getElementById('autoScrollPanel');
+
+            if (state.isAutoScrolling) {
+                btn.classList.add('primary');
+                panel.classList.add('show');
+                icon.innerHTML = '<rect x="6" y="4" width="4" height="16"></rect><rect x="14" y="4" width="4" height="16"></rect>';
+                startAutoScrollLoop();
+                showToast('已開啟自動平穩滾動');
+            } else {
+                btn.classList.remove('primary');
+                panel.classList.remove('show');
+                icon.innerHTML = '<polygon points="5 3 19 12 5 21 5 3"></polygon>';
+                cancelAnimationFrame(state.autoScrollRafId);
+                showToast('已暫停自動滾動');
+            }
+        }
+
+        function startAutoScrollLoop() {
+            function step() {
+                if (!state.isAutoScrolling) return;
+                const delta = state.scrollSpeed * 0.55;
+                window.scrollBy(0, delta);
+
+                if ((window.innerHeight + window.scrollY) >= document.body.offsetHeight - 6) {
+                    toggleAutoScroll();
+                    showToast('誦經已圓滿至文末');
+                    return;
+                }
+
+                state.autoScrollRafId = requestAnimationFrame(step);
+            }
+            state.autoScrollRafId = requestAnimationFrame(step);
+        }
+
+        function adjustScrollSpeed(delta) {
+            state.scrollSpeed = Math.max(1, Math.min(5, state.scrollSpeed + delta));
+            document.getElementById('scrollSpeedText').textContent = `速 ${state.scrollSpeed}`;
+        }
+
+        // 電子木魚敲擊
+        function quickTapMuyu(e) {
+            playWoodenFishSound();
+            state.muyuCount++;
+            updateMuyuDisplay();
+            spawnRipple(e.clientX, e.clientY);
+        }
+
+        function tapBigMuyu(e) {
+            playWoodenFishSound();
+            state.muyuCount++;
+            updateMuyuDisplay();
+            const rect = e.currentTarget.getBoundingClientRect();
+            spawnRipple(rect.left + rect.width / 2, rect.top + 20);
+        }
+
+        function updateMuyuDisplay() {
+            document.getElementById('floatingMuyuBadge').textContent = state.muyuCount;
+            document.getElementById('muyuCountDisplay').textContent = state.muyuCount;
+            localStorage.setItem('sutra_muyu_count', state.muyuCount);
+        }
+
+        function resetMuyuCount() {
+            if (confirm('確定要將今日持誦敲擊次數重設為 0 嗎？')) {
+                state.muyuCount = 0;
+                updateMuyuDisplay();
+                showToast('已重設念誦計數');
+            }
+        }
+
+        // 自動定速敲木魚（每1.5秒一聲伴念）
+        function toggleAutoMuyu() {
+            const btn = document.getElementById('btnAutoMuyu');
+            if (state.autoMuyuTimer) {
+                clearInterval(state.autoMuyuTimer);
+                state.autoMuyuTimer = null;
+                btn.style.background = '';
+                btn.style.color = '';
+                showToast('已停止木魚定速伴念');
+            } else {
+                playWoodenFishSound();
+                state.muyuCount++;
+                updateMuyuDisplay();
+                state.autoMuyuTimer = setInterval(() => {
+                    playWoodenFishSound();
+                    state.muyuCount++;
+                    updateMuyuDisplay();
+                }, 1500);
+                btn.style.background = 'var(--accent)';
+                btn.style.color = '#FFFFFF';
+                showToast('已開啟定速伴念（每1.5秒）');
+            }
+        }
+
+        // 浮動文字漣漪動畫
+        function spawnRipple(x, y) {
+            const el = document.createElement('div');
+            el.className = 'ripple-text';
+            const phrases = ['功德 +1', '得清靜 +1', '吉祥圓滿 +1', '福慧增廣 +1', '心生法喜 +1'];
+            el.textContent = phrases[Math.floor(Math.random() * phrases.length)];
+            el.style.left = (x || (window.innerWidth / 2)) + 'px';
+            el.style.top = (y || (window.innerHeight - 80)) + 'px';
+            document.body.appendChild(el);
+            setTimeout(() => el.remove(), 850);
+        }
+
+        // 沉浸專注模式
+        function toggleZenMode() {
+            state.isZenMode = !state.isZenMode;
+            document.body.classList.toggle('zen-mode', state.isZenMode);
+            if (state.isZenMode) {
+                showToast('進入沉浸專注閱讀（右上角可退出）');
+            } else {
+                showToast('已恢復工具欄');
+            }
+        }
+
+        // 主題切換
+        function setTheme(themeName, save = true) {
+            document.body.className = themeName + (state.currentSutraId === 'dizang' ? ' has-roll-bar' : '');
+            state.theme = themeName;
+            if (save) localStorage.setItem('sutra_theme', themeName);
+
+            document.querySelectorAll('.theme-btn').forEach(btn => {
+                btn.classList.toggle('active', btn.classList.contains('theme-btn-' + themeName.replace('theme-', '')));
+            });
+        }
+
+        // 字體大小
+        function changeFontSize(val, save = true) {
+            state.fontSize = val;
+            document.documentElement.style.setProperty('--font-size', val + 'px');
+            document.getElementById('fontSizeDisplay').textContent = val + 'px';
+            document.getElementById('fontSizeSlider').value = val;
+            if (save) localStorage.setItem('sutra_fontsize', val);
+        }
+
+        // 行距
+        function setLineHeight(val, save = true) {
+            state.lineHeight = val;
+            document.documentElement.style.setProperty('--line-height', val);
+            if (save) localStorage.setItem('sutra_lineheight', val);
+
+            document.querySelectorAll('#lh-18, #lh-21, #lh-24').forEach(btn => {
+                btn.classList.toggle('active', btn.id === 'lh-' + val.replace('.', ''));
+            });
+        }
+
+        // 排版方向 (橫排 / 直排)
+        function setLayout(layoutType, save = true) {
+            state.layout = layoutType;
+            const container = document.getElementById('readerContainer');
+            if (layoutType === 'vertical') {
+                container.classList.add('reading-vertical');
+                document.getElementById('layout-vertical').classList.add('active');
+                document.getElementById('layout-horizontal').classList.remove('active');
+                showToast('已切換為古風直排卷軸（可向左滑動）');
+            } else {
+                container.classList.remove('reading-vertical');
+                document.getElementById('layout-horizontal').classList.add('active');
+                document.getElementById('layout-vertical').classList.remove('active');
+            }
+            if (save) localStorage.setItem('sutra_layout', layoutType);
+        }
+
+        // 字體風格
+        function setFontFamily(fontType, save = true) {
+            state.fontFamily = fontType;
+            let family = "'Noto Serif TC', 'Songti TC', serif";
+            if (fontType === 'kaiti') {
+                family = "'LXGW WenKai TC', 'KaiTi', cursive, serif";
+            } else if (fontType === 'sans') {
+                family = "'Noto Sans TC', sans-serif";
+            }
+            document.documentElement.style.setProperty('--font-family', family);
+            if (save) localStorage.setItem('sutra_font', fontType);
+
+            document.querySelectorAll('#font-serif, #font-kaiti, #font-sans').forEach(btn => {
+                btn.classList.toggle('active', btn.id === 'font-' + fontType);
+            });
+        }
+
+        // 保持螢幕常亮 (Screen Wake Lock API)
+        async function toggleWakeLock(enabled) {
+            if (enabled) {
+                try {
+                    if ('wakeLock' in navigator) {
+                        state.wakeLock = await navigator.wakeLock.request('screen');
+                        showToast('已開啟螢幕常亮（不滅屏）');
+                    } else {
+                        showToast('您的瀏覽器不支援螢幕常亮');
+                    }
+                } catch (err) {
+                    console.warn('Wake Lock error:', err);
+                }
+            } else {
+                if (state.wakeLock) {
+                    await state.wakeLock.release();
+                    state.wakeLock = null;
+                    showToast('已關閉螢幕常亮');
+                }
+            }
+        }
+
+        // 顯示/隱藏生僻字注音
+        function togglePinyin(show) {
+            state.showPinyin = show;
+            document.body.classList.toggle('hide-pinyin', !show);
+        }
+
+        // 經文搜尋功能
+        function toggleSearchBar() {
+            const bar = document.getElementById('searchBarModal');
+            bar.classList.toggle('show');
+            if (bar.classList.contains('show')) {
+                document.getElementById('searchKeyword').focus();
+            } else {
+                clearSearchHighlights();
+            }
+        }
+
+        function executeSearch() {
+            const kw = document.getElementById('searchKeyword').value.trim();
+            if (!kw) return;
+
+            clearSearchHighlights();
+
+            const area = document.getElementById('scriptureContentArea');
+            const regex = new RegExp(`(${kw})`, 'gi');
+            let count = 0;
+
+            const walker = document.createTreeWalker(area, NodeFilter.SHOW_TEXT, null, false);
+            const textNodes = [];
+            while (walker.nextNode()) {
+                if (walker.currentNode.parentNode.nodeName !== 'SCRIPT' && walker.currentNode.parentNode.nodeName !== 'STYLE') {
+                    textNodes.push(walker.currentNode);
+                }
+            }
+
+            textNodes.forEach(node => {
+                if (regex.test(node.nodeValue)) {
+                    const span = document.createElement('span');
+                    span.innerHTML = node.nodeValue.replace(regex, '<mark class="sutra-highlight">$1</mark>');
+                    node.parentNode.replaceChild(span, node);
+                    count++;
+                }
+            });
+
+            document.getElementById('searchMatchCount').textContent = count > 0 ? `共 ${count} 處` : '未找到匹配';
+            const firstMark = document.querySelector('mark.sutra-highlight');
+            if (firstMark) {
+                firstMark.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }
+        }
+
+        function clearSearchHighlights() {
+            document.querySelectorAll('mark.sutra-highlight').forEach(mark => {
+                const parent = mark.parentNode;
+                parent.replaceChild(document.createTextNode(mark.textContent), mark);
+                parent.normalize();
+            });
+            document.getElementById('searchMatchCount').textContent = '';
+        }
+
+        // 抽屜面板控制
+        function openTocDrawer() {
+            closeAllDrawers();
+            document.getElementById('tocDrawer').classList.add('open');
+            document.getElementById('drawerBackdrop').classList.add('open');
+            renderTocDrawer();
+        }
+
+        function openSettingsDrawer() {
+            closeAllDrawers();
+            document.getElementById('settingsDrawer').classList.add('open');
+            document.getElementById('drawerBackdrop').classList.add('open');
+        }
+
+        function openMuyuModal() {
+            closeAllDrawers();
+            document.getElementById('muyuDrawer').classList.add('open');
+            document.getElementById('drawerBackdrop').classList.add('open');
+        }
+
+        function closeAllDrawers() {
+            document.querySelectorAll('.drawer-panel').forEach(el => el.classList.remove('open'));
+            document.getElementById('drawerBackdrop').classList.remove('open');
+        }
+
+        // Toast 輕提示
+        let toastTimer = null;
+        function showToast(msg) {
+            const toast = document.getElementById('appToast');
+            toast.textContent = msg;
+            toast.classList.add('show');
+            clearTimeout(toastTimer);
+            toastTimer = setTimeout(() => {
+                toast.classList.remove('show');
+            }, 2100);
+        }
+    </script>
+</body>
+</html>
