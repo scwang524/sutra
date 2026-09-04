@@ -30,7 +30,7 @@
             --gold: #A07833; /* 沉香金 */
             --gold-bg: #F9F3E5;
             --shadow: 0 4px 20px rgba(60, 48, 32, 0.08);
-            --font-size: 19px;
+            --font-size: 24px;
             --line-height: 2.1;
             --letter-spacing: 0.05em;
             --font-family: 'Noto Serif TC', 'Songti TC', serif;
@@ -349,20 +349,21 @@
         }
 
         .chapter-heading {
-            font-size: calc(var(--font-size) + 3px);
+            font-size: calc(var(--font-size) * 1.12);
             font-weight: 700;
             color: var(--accent);
-            margin: 32px 0 18px 0;
-            padding-bottom: 8px;
+            margin: 36px 0 20px 0;
+            padding-bottom: 10px;
             border-bottom: 1px solid var(--border-subtle);
             display: flex;
             align-items: center;
-            gap: 8px;
+            gap: 10px;
             letter-spacing: 0.06em;
+            line-height: 1.35;
         }
         .chapter-badge {
-            width: 7px;
-            height: 18px;
+            width: 0.28em;
+            height: 0.95em;
             background-color: var(--accent);
             border-radius: 3px;
             display: inline-block;
@@ -570,6 +571,56 @@
         }
         body.zen-mode .zen-exit-btn {
             display: flex;
+        }
+
+        
+        /* 大字版專屬調整按鈕與膠囊 */
+        .font-step-btn {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            border: 1px solid var(--border-highlight);
+            background: var(--bg-card);
+            color: var(--text-main);
+            font-size: 13px;
+            font-weight: 700;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            transition: all 0.15s ease;
+        }
+        .font-step-btn:active {
+            transform: scale(0.92);
+            background: var(--bg-card-subtle);
+        }
+        .font-presets-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 6px;
+            margin-top: 8px;
+        }
+        .font-preset-pill {
+            padding: 6px 3px;
+            border-radius: 8px;
+            font-size: 12px;
+            border: 1px solid var(--border-subtle);
+            background: var(--bg-card-subtle);
+            color: var(--text-sub);
+            cursor: pointer;
+            text-align: center;
+            font-weight: 500;
+            transition: all 0.15s ease;
+        }
+        .font-preset-pill:active {
+            transform: scale(0.95);
+        }
+        .font-preset-pill.active {
+            background: var(--accent);
+            color: #FFFFFF;
+            border-color: var(--accent);
+            font-weight: 600;
         }
 
         /* 抽屜模態框 (Drawer) */
@@ -932,6 +983,10 @@
         </div>
 
         <div class="header-right">
+            <!-- 一鍵放大字體快速鍵 -->
+            <button class="icon-btn" onclick="stepFontSize(2)" title="一鍵放大字體" style="color:var(--accent); font-weight:800; font-size:14.5px;">
+                A<span style="font-size:11px; vertical-align:super;">+</span>
+            </button>
             <!-- 搜尋關鍵字 -->
             <button class="icon-btn" onclick="toggleSearchBar()" title="檢索經文">
                 <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -1110,16 +1165,25 @@
                 </div>
             </div>
 
-            <!-- 字體大小 -->
+            <!-- 字體大小（放大再放大） -->
             <div class="setting-section">
                 <div class="setting-label" style="justify-content:space-between;">
-                    <span>字體大小</span>
-                    <span id="fontSizeDisplay" style="color:var(--accent); font-weight:700;">19px</span>
+                    <span>經文字體大小（可極致放大）</span>
+                    <span id="fontSizeDisplay" style="color:var(--accent); font-weight:700; font-size:16px;">24px</span>
                 </div>
                 <div class="slider-row">
-                    <span style="font-size:13px;">小</span>
-                    <input type="range" class="custom-slider" id="fontSizeSlider" min="15" max="28" step="1" value="19" oninput="changeFontSize(this.value)">
-                    <span style="font-size:20px; font-weight:700;">大</span>
+                    <button class="font-step-btn" onclick="stepFontSize(-2)" title="縮小字體">A-</button>
+                    <input type="range" class="custom-slider" id="fontSizeSlider" min="16" max="44" step="1" value="24" oninput="changeFontSize(this.value)">
+                    <button class="font-step-btn" onclick="stepFontSize(2)" title="放大字體">A+</button>
+                </div>
+                <!-- 常用大字檔位快捷鍵 -->
+                <div class="font-presets-grid">
+                    <button class="font-preset-pill" onclick="changeFontSize(18)">標準 (18px)</button>
+                    <button class="font-preset-pill" onclick="changeFontSize(22)">大字 (22px)</button>
+                    <button class="font-preset-pill" onclick="changeFontSize(26)">超大 (26px)</button>
+                    <button class="font-preset-pill" onclick="changeFontSize(32)">特大 (32px)</button>
+                    <button class="font-preset-pill" onclick="changeFontSize(38)">極大 (38px)</button>
+                    <button class="font-preset-pill" onclick="changeFontSize(44)">巨幕 (44px)</button>
                 </div>
             </div>
 
@@ -1230,7 +1294,7 @@
             currentChapterTitle: '',
             drawerSutraId: 'dizang',
             theme: 'theme-ricepaper',
-            fontSize: 19,
+            fontSize: 24,
             lineHeight: 2.1,
             layout: 'horizontal',
             fontFamily: 'serif',
@@ -1346,7 +1410,7 @@
                 if (savedTheme) setTheme(savedTheme, false);
 
                 const savedSize = localStorage.getItem('sutra_fontsize');
-                if (savedSize) changeFontSize(savedSize, false);
+                if (savedSize) { changeFontSize(savedSize, false); } else { changeFontSize(24, false); }
 
                 const savedLh = localStorage.getItem('sutra_lineheight');
                 if (savedLh) setLineHeight(savedLh, false);
@@ -1786,13 +1850,30 @@
             });
         }
 
-        // 字體大小
+        // 字體大小步進調整（放大再放大）
+        function stepFontSize(delta) {
+            const cur = parseInt(state.fontSize, 10) || 24;
+            const next = Math.max(16, Math.min(44, cur + delta));
+            changeFontSize(next);
+            showToast(`字體已調整為 ${next}px`);
+        }
+
+        // 字體大小設定
         function changeFontSize(val, save = true) {
-            state.fontSize = val;
-            document.documentElement.style.setProperty('--font-size', val + 'px');
-            document.getElementById('fontSizeDisplay').textContent = val + 'px';
-            document.getElementById('fontSizeSlider').value = val;
-            if (save) localStorage.setItem('sutra_fontsize', val);
+            const num = parseInt(val, 10) || 24;
+            state.fontSize = num;
+            document.documentElement.style.setProperty('--font-size', num + 'px');
+            const display = document.getElementById('fontSizeDisplay');
+            if (display) display.textContent = num + 'px';
+            const slider = document.getElementById('fontSizeSlider');
+            if (slider) slider.value = num;
+
+            // 更新預設按鈕高亮
+            document.querySelectorAll('.font-preset-pill').forEach(btn => {
+                btn.classList.toggle('active', btn.getAttribute('onclick').includes(`(${num})`));
+            });
+
+            if (save) localStorage.setItem('sutra_fontsize', num);
         }
 
         // 行距
