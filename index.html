@@ -262,52 +262,76 @@
             box-shadow: 0 2px 8px rgba(154, 40, 41, 0.25);
         }
 
-        /* 地藏經 卷上 / 卷中 / 卷下 快速切換條 */
-        .dizang-roll-bar {
+        /* 經典區塊 / 品節導航與即時狀態條（全經典通用，滑動時清楚標明當前位置） */
+        .scripture-section-bar {
             position: fixed;
             top: calc(96px + var(--safe-top));
             left: 0;
             right: 0;
-            height: 36px;
-            background-color: var(--bg-card-subtle);
+            height: 38px;
+            background-color: var(--bg-card);
             border-bottom: 1px solid var(--border-subtle);
-            display: none;
+            display: flex;
             align-items: center;
-            justify-content: center;
-            gap: 8px;
             padding-left: calc(10px + var(--safe-left));
             padding-right: calc(10px + var(--safe-right));
             overflow-x: auto;
             -webkit-overflow-scrolling: touch;
             scrollbar-width: none;
             z-index: 85;
-            transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.3s ease;
+            gap: 6px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.03);
         }
-        .dizang-roll-bar::-webkit-scrollbar {
+        .scripture-section-bar::-webkit-scrollbar {
             display: none;
         }
-        .dizang-roll-bar.show {
-            display: flex;
+        .section-status-prefix {
+            font-size: 11px;
+            font-weight: 700;
+            color: var(--accent);
+            padding: 2px 7px;
+            border-radius: 4px;
+            background: var(--accent-bg);
+            white-space: nowrap;
+            flex-shrink: 0;
+            letter-spacing: 0.05em;
         }
-
-        .roll-tab-pill {
+        .section-pills-scroll {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+            scrollbar-width: none;
+            flex: 1;
+            padding-right: 10px;
+        }
+        .section-pills-scroll::-webkit-scrollbar {
+            display: none;
+        }
+        .section-pill-btn {
             font-size: 12px;
-            padding: 3px 10px;
-            border-radius: 12px;
+            padding: 3px 11px;
+            border-radius: 14px;
             cursor: pointer;
             color: var(--text-sub);
-            border: 1px solid transparent;
+            border: 1px solid var(--border-subtle);
+            background: var(--bg-card-subtle);
             font-weight: 500;
             transition: all 0.2s ease;
             white-space: nowrap;
             flex-shrink: 0;
         }
-        .roll-tab-pill.active {
-            background-color: var(--bg-card);
+        .section-pill-btn:hover {
             border-color: var(--border-highlight);
-            color: var(--accent);
+            color: var(--text-main);
+        }
+        .section-pill-btn.active {
+            background-color: var(--accent);
+            border-color: var(--accent);
+            color: #FFFFFF;
             font-weight: 600;
-            box-shadow: 0 1px 4px rgba(0,0,0,0.05);
+            box-shadow: 0 2px 6px rgba(154, 40, 41, 0.25);
         }
 
         /* 經文主內容區塊 */
@@ -318,21 +342,18 @@
             min-height: 100dvh;
             background-color: var(--bg-content);
             box-shadow: var(--shadow);
-            padding: calc(108px + var(--safe-top)) calc(20px + var(--safe-right)) calc(180px + var(--safe-bottom)) calc(20px + var(--safe-left));
+            padding: calc(144px + var(--safe-top)) calc(20px + var(--safe-right)) calc(180px + var(--safe-bottom)) calc(20px + var(--safe-left));
             transition: padding 0.3s ease;
             word-break: break-word;
             overflow-wrap: break-word;
         }
-        body.has-roll-bar .reader-container {
-            padding-top: calc(144px + var(--safe-top));
-        }
 
-        /* 經文標題莊嚴飾卡 */
+        /* 經文頂部印記（簡約清淨，去除冗長摘要壓迫感） */
         .scripture-header-art {
             text-align: center;
-            padding: 24px 8px 32px 8px;
+            padding: 16px 8px 22px 8px;
             border-bottom: 1px dashed var(--border-subtle);
-            margin-bottom: 28px;
+            margin-bottom: 24px;
             position: relative;
         }
         .seal-stamp {
@@ -343,69 +364,106 @@
             font-size: 12px;
             font-weight: 700;
             border-radius: 4px;
-            letter-spacing: 0.25em;
-            margin-bottom: 12px;
+            letter-spacing: 0.2em;
+            margin-bottom: 8px;
             background-color: var(--accent-bg);
         }
         .main-sutra-title {
             font-size: 26px;
-            font-weight: 700;
+            font-weight: 800;
             letter-spacing: 0.1em;
             color: var(--text-main);
-            margin-bottom: 8px;
-            line-height: 1.35;
+            margin-bottom: 6px;
+            line-height: 1.3;
         }
         .sutra-subtitle {
-            font-size: 13.5px;
+            font-size: 13px;
             color: var(--text-sub);
-            margin-bottom: 14px;
-            font-weight: 400;
+            margin-bottom: 8px;
+            font-weight: 500;
             letter-spacing: 0.05em;
         }
-        .sutra-summary-box {
-            font-size: 13px;
-            line-height: 1.8;
-            color: var(--text-light);
-            background: var(--bg-card-subtle);
-            padding: 10px 16px;
-            border-radius: 8px;
+        .sutra-blessing-pill {
             display: inline-block;
-            max-width: 96%;
-            text-align: left;
-            border-left: 3px solid var(--gold);
+            font-size: 12px;
+            color: var(--gold);
+            background: var(--gold-bg);
+            padding: 3px 14px;
+            border-radius: 12px;
+            border: 1px solid var(--border-highlight);
+            letter-spacing: 0.1em;
+            font-weight: 600;
+            margin-top: 4px;
+        }
+        .sutra-summary-box {
+            display: none; /* 隱藏原本長篇大論的文字塊，由各區塊獨立標記 */
         }
 
-        /* 章節品目錨點 */
+        /* 經文區塊卡片化與醒目標示 */
         .chapter-section {
-            margin-bottom: 40px;
+            margin-bottom: 48px;
             position: relative;
-            scroll-margin-top: calc(108px + var(--safe-top));
+            scroll-margin-top: calc(146px + var(--safe-top));
         }
-        body.has-roll-bar .chapter-section {
-            scroll-margin-top: calc(144px + var(--safe-top));
+        .chapter-block-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-subtle);
+            border-radius: 12px;
+            padding: 16px 16px 14px 16px;
+            margin: 36px 0 24px 0;
+            text-align: center;
+            box-shadow: 0 2px 10px rgba(60, 48, 32, 0.04);
+            position: relative;
         }
-
-        .chapter-heading {
-            font-size: calc(var(--font-size) * 1.12);
+        .chapter-block-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            background: var(--gold-bg);
+            color: var(--gold);
+            border: 1px solid var(--border-highlight);
+            font-size: 11.5px;
             font-weight: 700;
+            padding: 2px 10px;
+            border-radius: 10px;
+            letter-spacing: 0.1em;
+            margin-bottom: 6px;
+        }
+        .chapter-heading {
+            font-size: calc(var(--font-size) * 1.15);
+            font-weight: 800;
             color: var(--accent);
-            margin: 36px 0 20px 0;
-            padding-bottom: 10px;
-            border-bottom: 1px solid var(--border-subtle);
-            display: flex;
-            align-items: flex-start;
-            gap: 10px;
+            margin: 4px 0 8px 0;
             letter-spacing: 0.06em;
             line-height: 1.35;
         }
-        .chapter-badge {
-            width: 0.28em;
-            height: 0.95em;
-            background-color: var(--accent);
-            border-radius: 3px;
-            display: inline-block;
-            flex-shrink: 0;
-            margin-top: 0.22em;
+        .chapter-block-decor {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            color: var(--border-highlight);
+            font-size: 11px;
+        }
+        .chapter-block-decor .decor-line {
+            height: 1px;
+            width: 32px;
+            background: linear-gradient(to right, transparent, var(--border-highlight), transparent);
+        }
+        .chapter-block-footer {
+            text-align: center;
+            margin: 28px 0 44px 0;
+            padding: 8px 0;
+            border-top: 1px dashed var(--border-subtle);
+            border-bottom: 1px dashed var(--border-subtle);
+        }
+        .chapter-block-footer span {
+            font-size: 12px;
+            letter-spacing: 0.12em;
+            color: var(--text-light);
+            background: var(--bg-card-subtle);
+            padding: 3px 14px;
+            border-radius: 10px;
         }
 
         .roll-divider-header {
@@ -1218,11 +1276,12 @@
         </button>
     </div>
 
-    <!-- 地藏經 卷上 / 卷中 / 卷下 快速切換條 -->
-    <div class="dizang-roll-bar show" id="dizangRollBar">
-        <span class="roll-tab-pill active" id="pill-juan-shang" onclick="scrollToRoll('juan-shang')">卷上（一至四品）</span>
-        <span class="roll-tab-pill" id="pill-juan-zhong" onclick="scrollToRoll('juan-zhong')">卷中（五至九品）</span>
-        <span class="roll-tab-pill" id="pill-juan-xia" onclick="scrollToRoll('juan-xia')">卷下（十至十三品）</span>
+    <!-- 全經典通用：當前章節區塊導航與即時狀態條 -->
+    <div class="scripture-section-bar" id="scriptureSectionBar">
+        <span class="section-status-prefix">❖ 區塊</span>
+        <div class="section-pills-scroll" id="sectionPillsContainer">
+            <!-- 動態生成各經典各章節膠囊標籤 -->
+        </div>
     </div>
 
     <!-- 經文搜尋條 -->
@@ -1315,10 +1374,10 @@
         <div class="drawer-body">
             <!-- 抽屜內切換經典標籤 -->
             <div class="toc-scripture-tabs" id="tocScriptureTabs">
-                <span class="toc-s-pill active" onclick="switchScriptureInDrawer('dizang')">地藏菩薩本願經</span>
-                <span class="toc-s-pill" onclick="switchScriptureInDrawer('xinjing')">心經</span>
-                <span class="toc-s-pill" onclick="switchScriptureInDrawer('qingjing')">太上清淨經</span>
-                <span class="toc-s-pill" onclick="switchScriptureInDrawer('mile')">彌勒救苦真經</span>
+                <span class="toc-s-pill active" data-sutra="dizang" onclick="switchScriptureInDrawer('dizang')">地藏菩薩本願經</span>
+                <span class="toc-s-pill" data-sutra="xinjing" onclick="switchScriptureInDrawer('xinjing')">般若波羅蜜多心經</span>
+                <span class="toc-s-pill" data-sutra="qingjing" onclick="switchScriptureInDrawer('qingjing')">太上老君常清靜經</span>
+                <span class="toc-s-pill" data-sutra="mile" onclick="switchScriptureInDrawer('mile')">彌勒救苦真經</span>
             </div>
             <!-- 目錄項目清單 -->
             <div id="tocListContainer"></div>
@@ -1683,28 +1742,25 @@
                 btn.classList.toggle('active', btn.dataset.sutra === sutraId);
             });
 
-            // 地藏經特有的卷導航條
-            const rollBar = document.getElementById('dizangRollBar');
-            if (sutraId === 'dizang') {
-                rollBar.classList.add('show');
-                document.body.classList.add('has-roll-bar');
-            } else {
-                rollBar.classList.remove('show');
-                document.body.classList.remove('has-roll-bar');
-            }
+            // 同步更新目錄抽屜（下拉選單）中的標籤選中狀態
+            updateTocScripturePills(sutraId);
 
-            // 組裝 HTML
+            // 渲染頂部通用章節區塊膠囊列
+            const pillsContainer = document.getElementById('sectionPillsContainer');
+            let pillsHtml = '';
+
+            // 組裝 HTML（精簡頂部印記，去除冗長摘要壓迫感）
             let html = `
                 <div class="scripture-header-art">
                     <div class="seal-stamp">${data.category || '殊勝經典'}</div>
                     <h1 class="main-sutra-title">${data.title}</h1>
                     <div class="sutra-subtitle">${data.subtitle || ''}</div>
-                    <div class="sutra-summary-box">${data.summary || '至心持誦，得不可思議功德利益。'}</div>
+                    <div class="sutra-blessing-pill">❖ 恭敬持誦 · 隨文入觀 · 功德無量 ❖</div>
                 </div>
             `;
 
             if (sutraId === 'dizang') {
-                // 地藏經三卷
+                // 地藏經三卷十三品
                 data.rolls.forEach((roll, rIdx) => {
                     html += `
                         <div class="roll-divider-header" id="${roll.id}">
@@ -1714,34 +1770,62 @@
                     `;
 
                     roll.chapters.forEach(chap => {
+                        const badge = getChapterBadge(sutraId, chap, roll.id);
+                        const shortName = getChapterShortPillName(sutraId, chap, roll.id);
+                        pillsHtml += `<button class="section-pill-btn" id="sec-pill-${chap.id}" onclick="jumpToChapter('${chap.id}')" title="${chap.title}">${shortName}</button>`;
+
                         html += `
-                            <section class="chapter-section" id="${chap.id}" data-title="${chap.title}" data-roll="${roll.id}">
-                                <h2 class="chapter-heading">
-                                    <span class="chapter-badge"></span>
-                                    <span>${chap.title}</span>
-                                </h2>
+                            <section class="chapter-section" id="${chap.id}" data-title="${chap.title}" data-badge="${badge}" data-roll="${roll.id}">
+                                <div class="chapter-block-card">
+                                    <div class="chapter-block-badge">${badge}</div>
+                                    <h2 class="chapter-heading">${chap.title}</h2>
+                                    <div class="chapter-block-decor">
+                                        <span class="decor-line"></span>
+                                        <span>❖</span>
+                                        <span class="decor-line"></span>
+                                    </div>
+                                </div>
                                 <div class="chapter-body">
                                     ${renderParagraphs(chap.paragraphs)}
+                                </div>
+                                <div class="chapter-block-footer">
+                                    <span>❖ ${chap.title} · 讀誦圓滿 ❖</span>
                                 </div>
                             </section>
                         `;
                     });
                 });
             } else {
-                // 其他經典
+                // 其他經典（心經、清靜經、彌勒真經）
                 data.chapters.forEach(chap => {
+                    const badge = getChapterBadge(sutraId, chap, null);
+                    const shortName = getChapterShortPillName(sutraId, chap, null);
+                    pillsHtml += `<button class="section-pill-btn" id="sec-pill-${chap.id}" onclick="jumpToChapter('${chap.id}')" title="${chap.title}">${shortName}</button>`;
+
                     html += `
-                        <section class="chapter-section" id="${chap.id}" data-title="${chap.title}">
-                            <h2 class="chapter-heading">
-                                <span class="chapter-badge"></span>
-                                <span>${chap.title}</span>
-                            </h2>
+                        <section class="chapter-section" id="${chap.id}" data-title="${chap.title}" data-badge="${badge}">
+                            <div class="chapter-block-card">
+                                <div class="chapter-block-badge">${badge}</div>
+                                <h2 class="chapter-heading">${chap.title}</h2>
+                                <div class="chapter-block-decor">
+                                    <span class="decor-line"></span>
+                                    <span>❖</span>
+                                    <span class="decor-line"></span>
+                                </div>
+                            </div>
                             <div class="chapter-body">
                                 ${renderParagraphs(chap.paragraphs)}
+                            </div>
+                            <div class="chapter-block-footer">
+                                <span>❖ ${chap.title} · 讀誦圓滿 ❖</span>
                             </div>
                         </section>
                     `;
                 });
+            }
+
+            if (pillsContainer) {
+                pillsContainer.innerHTML = pillsHtml;
             }
 
             document.getElementById('scriptureContentArea').innerHTML = html;
@@ -1751,6 +1835,75 @@
 
             // 重新初始化 IntersectionObserver 監聽
             setTimeout(setupIntersectionObserver, 200);
+        }
+
+        // 取得章節品目的莊嚴標籤
+        function getChapterBadge(sutraId, chap, rollId) {
+            if (sutraId === 'dizang') {
+                if (chap.id.includes('c1') || chap.title.includes('前行') || chap.title.includes('爐香讚')) return '前行開經';
+                if (chap.id.includes('ending') || chap.title.includes('結行') || chap.title.includes('迴向')) return '圓滿結行';
+                let rollName = '卷上';
+                if (rollId === 'juan-zhong') rollName = '卷中';
+                else if (rollId === 'juan-xia') rollName = '卷下';
+                const m = chap.title.match(/第([一二三四五六七八九十百]+)品/) || chap.title.match(/品第([一二三四五六七八九十]+)/);
+                if (m) return `${rollName} · 第${m[1]}品`;
+                return `${rollName} · 品節正文`;
+            }
+            if (sutraId === 'xinjing') {
+                if (chap.id.includes('intro') || chap.title.includes('開經')) return '前行開經';
+                if (chap.id.includes('ending') || chap.title.includes('迴向')) return '圓滿結行';
+                return '經文正文';
+            }
+            if (sutraId === 'qingjing') {
+                if (chap.id.includes('intro') || chap.title.includes('神咒')) return '前行淨壇';
+                if (chap.id.includes('ending') || chap.title.includes('迴向')) return '圓滿結行';
+                const m = chap.title.match(/第([一二三四五]+)章/);
+                if (m) return `經文第${m[1]}章`;
+                return '仙真論述';
+            }
+            if (sutraId === 'mile') {
+                if (chap.id.includes('intro') || chap.title.includes('開經')) return '前行開經';
+                if (chap.id.includes('c1')) return '正文上篇 (1-9段)';
+                if (chap.id.includes('c2')) return '正文下篇 (10-18段)';
+                if (chap.id.includes('ending') || chap.title.includes('迴向')) return '圓滿結行';
+                return '經文段落';
+            }
+            return '經文區塊';
+        }
+
+        // 取得頂部膠囊導航條章節簡稱
+        function getChapterShortPillName(sutraId, chap, rollId) {
+            if (sutraId === 'dizang') {
+                if (chap.title.includes('前行')) return '卷首前行';
+                if (chap.title.includes('結行') || chap.title.includes('迴向')) return '圓滿結行';
+                const m = chap.title.match(/(.*)品第?([一二三四五六七八九十]+)/);
+                if (m) {
+                    const num = m[2];
+                    const name = m[1].replace(/品$/, '').substring(0, 4);
+                    return `${num}品 ${name}`;
+                }
+                return chap.title.substring(0, 6);
+            }
+            if (sutraId === 'xinjing') {
+                if (chap.title.includes('開經')) return '前行開經';
+                if (chap.title.includes('迴向')) return '圓滿迴向';
+                return '心經正文';
+            }
+            if (sutraId === 'qingjing') {
+                if (chap.title.includes('神咒')) return '前行神咒';
+                if (chap.title.includes('迴向')) return '圓滿迴向';
+                const m = chap.title.match(/第([一二三四五]+)章[・\s]*(.*)/);
+                if (m) return `${m[1]}章 ${m[2].substring(0, 4)}`;
+                return chap.title.substring(0, 6);
+            }
+            if (sutraId === 'mile') {
+                if (chap.title.includes('開經')) return '彌勒開經';
+                if (chap.id.includes('c1')) return '正文上篇 (1-9)';
+                if (chap.id.includes('c2')) return '正文下篇 (10-18)';
+                if (chap.title.includes('迴向')) return '佛號迴向';
+                return chap.title.substring(0, 6);
+            }
+            return chap.title.substring(0, 6);
         }
 
         // 更新 Header 標題顯示
@@ -1797,14 +1950,10 @@
             return result;
         }
 
-        // 計算頂部固定欄位高度，用於精準滾動補償（避免標題被上方 Header 與卷標籤遮擋）
+        // 計算頂部固定欄位高度，用於精準滾動補償（避免標題被上方 Header 與章節導航條遮擋）
         function getHeaderOffset() {
-            let offset = 96; // app-header (54px) + scripture-quick-bar (42px)
-            const rollBar = document.getElementById('dizangRollBar');
-            if (rollBar && rollBar.classList.contains('show')) {
-                offset += 36; // dizang-roll-bar (36px)
-            }
-            return offset + 12; // 留 12px 留白美觀
+            // app-header (54px) + scripture-quick-bar (42px) + scripture-section-bar (38px) = 134px + 12px 留白
+            return 146;
         }
 
         // 切換經典
@@ -1818,12 +1967,17 @@
             closeAllDrawers();
         }
 
+        // 同步目錄抽屜（下拉選單）經典標籤選中狀態
+        function updateTocScripturePills(sutraId) {
+            document.querySelectorAll('.toc-s-pill').forEach(p => {
+                p.classList.toggle('active', p.dataset.sutra === sutraId);
+            });
+        }
+
         // 抽屜內切換經典目錄分頁
         function switchScriptureInDrawer(sutraId) {
             state.drawerSutraId = sutraId;
-            document.querySelectorAll('.toc-s-pill').forEach(p => {
-                p.classList.toggle('active', p.getAttribute('onclick').includes(sutraId));
-            });
+            updateTocScripturePills(sutraId);
             renderTocDrawer();
         }
 
@@ -1857,6 +2011,9 @@
             const data = SCRIPTURES_DATA[sutraId];
             const container = document.getElementById('tocListContainer');
             if (!container || !data) return;
+
+            // 確保上方標籤選中狀態與即將渲染的章節內容一致
+            updateTocScripturePills(sutraId);
 
             let html = '';
 
@@ -1964,17 +2121,31 @@
                     if (entry.isIntersecting) {
                         const rollId = entry.target.dataset.roll;
                         const chapTitle = entry.target.dataset.title;
+                        const chapBadge = entry.target.dataset.badge;
+                        const chapId = entry.target.id;
+
                         if (rollId) {
                             updateRollPillActive(rollId);
                         }
                         if (chapTitle) {
                             state.currentChapterTitle = chapTitle;
                             const short = SCRIPTURES_DATA[state.currentSutraId].shortTitle || SCRIPTURES_DATA[state.currentSutraId].title;
-                            updateHeaderTitle(`${short} · ${chapTitle}`);
+                            updateHeaderTitle(`${short} · ${chapBadge || chapTitle}`);
+                        }
+
+                        // 即時同步高亮頂部通用章節區塊膠囊列，並平滑滾動至可視中央
+                        if (chapId) {
+                            document.querySelectorAll('.section-pill-btn').forEach(btn => {
+                                btn.classList.toggle('active', btn.id === 'sec-pill-' + chapId);
+                            });
+                            const activeBtn = document.getElementById('sec-pill-' + chapId);
+                            if (activeBtn) {
+                                activeBtn.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
+                            }
                         }
                     }
                 });
-            }, { rootMargin: '-15% 0px -75% 0px' });
+            }, { rootMargin: '-10% 0px -70% 0px' });
 
             document.querySelectorAll('.chapter-section').forEach(sec => sectionObserver.observe(sec));
         }
@@ -2147,11 +2318,6 @@
             const themes = ['theme-ricepaper', 'theme-dark', 'theme-bamboo', 'theme-moonwhite'];
             themes.forEach(t => document.body.classList.remove(t));
             document.body.classList.add(themeName);
-            if (state.currentSutraId === 'dizang') {
-                document.body.classList.add('has-roll-bar');
-            } else {
-                document.body.classList.remove('has-roll-bar');
-            }
             state.theme = themeName;
             if (save) localStorage.setItem('sutra_theme', themeName);
 
@@ -2324,6 +2490,9 @@
         // 抽屜面板控制
         function openTocDrawer() {
             closeAllDrawers();
+            // 每次打開目錄抽屜（下拉選單），強制同步為當前主畫面正在閱讀的經典
+            state.drawerSutraId = state.currentSutraId;
+            updateTocScripturePills(state.currentSutraId);
             document.getElementById('tocDrawer').classList.add('open');
             document.getElementById('drawerBackdrop').classList.add('open');
             renderTocDrawer();
