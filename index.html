@@ -517,6 +517,49 @@
             overflow-wrap: break-word;
         }
 
+        /* 經文子區塊獨立醒目標題（如【爐香讚】、【開經偈】、【淨身業真言】等） */
+        .sutra-sub-heading {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            margin: 32px auto 16px auto;
+            text-align: center;
+            user-select: none;
+            width: 100%;
+        }
+        .sutra-sub-heading .sub-tag {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 15px;
+            font-weight: 700;
+            letter-spacing: 0.12em;
+            color: var(--accent);
+            background: var(--accent-bg);
+            border: 1px solid var(--border-highlight);
+            border-radius: 20px;
+            padding: 4px 16px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+            transition: all 0.2s ease;
+        }
+        .sutra-sub-heading .sub-heading-wing {
+            color: var(--gold);
+            font-size: 13px;
+            opacity: 0.85;
+            display: inline-flex;
+            align-items: center;
+        }
+        .reading-vertical .sutra-sub-heading {
+            margin: 0 16px 0 20px;
+            height: auto;
+            writing-mode: vertical-rl;
+        }
+        .reading-vertical .sutra-sub-heading .sub-tag {
+            letter-spacing: 0.18em;
+            padding: 16px 4px;
+        }
+
         /* 罕見字/梵音注音 (Ruby) */
         ruby {
             ruby-position: over;
@@ -1911,18 +1954,38 @@
             document.getElementById('headerTitleText').textContent = title;
         }
 
-        // 渲染段落並處理注音
+        // 渲染段落並處理注音與專屬子區塊獨立標題
         function renderParagraphs(paragraphs) {
             return paragraphs.map(p => {
-                const isVerse = p.includes('\n') || p.includes('南無') || p.startsWith('【') || (p.length < 55 && !p.endsWith('。'));
-                let formatted = p.replace(/\n/g, '<br>');
+                let subHeadingHtml = '';
+                let content = p.trim();
+
+                const headingMatch = content.match(/^【([^】]+)】\s*\n?([\s\S]*)$/);
+                if (headingMatch) {
+                    const headingText = headingMatch[1].trim();
+                    content = headingMatch[2].trim();
+                    subHeadingHtml = `
+                        <div class="sutra-sub-heading" data-subheading="${headingText}">
+                            <span class="sub-heading-wing">❖</span>
+                            <span class="sub-tag">【${headingText}】</span>
+                            <span class="sub-heading-wing">❖</span>
+                        </div>
+                    `;
+                }
+
+                if (!content) {
+                    return subHeadingHtml;
+                }
+
+                const isVerse = content.includes('\n') || content.includes('南無') || (content.length < 55 && !content.endsWith('。'));
+                let formatted = content.replace(/\n/g, '<br>');
                 formatted = enrichWithPinyin(formatted);
 
-                if (isVerse) {
-                    return `<div class="sutra-verse sutra-p">${formatted}</div>`;
-                } else {
-                    return `<p class="sutra-p">${formatted}</p>`;
-                }
+                const bodyHtml = isVerse 
+                    ? `<div class="sutra-verse sutra-p">${formatted}</div>` 
+                    : `<p class="sutra-p">${formatted}</p>`;
+
+                return subHeadingHtml + bodyHtml;
             }).join('');
         }
 
