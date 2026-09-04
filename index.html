@@ -1504,39 +1504,82 @@
             return audioCtx;
         }
 
-        // 合成木魚音效
+        // 寺廟大木魚 · 物理聲學真實合成器 (沉香木空心腔體共振 + 實木撞擊音)
         function playWoodenFishSound() {
             try {
                 const ctx = getAudioContext();
                 const now = ctx.currentTime;
 
-                const osc = ctx.createOscillator();
-                const gain = ctx.createGain();
-                const filter = ctx.createBiquadFilter();
+                // 自然手敲微幅律動 (頻率微漂移 ±1.5%，避免機器重複感)
+                const pitchJitter = 1 + (Math.random() * 0.03 - 0.015);
+                const baseFreq = 328 * pitchJitter; // 沉香大木魚沉穩基頻約 328Hz
+                const woodHarmonic = baseFreq * 1.68; // 木質側壁二次共鳴約 550Hz
 
-                osc.type = 'triangle';
-                osc.frequency.setValueAtTime(620, now);
-                osc.frequency.exponentialRampToValueAtTime(140, now + 0.12);
+                // 1. 主空心共鳴腔 (Helmholtz 腔體共振，溫潤渾厚的「咚/敻」聲)
+                const oscMain = ctx.createOscillator();
+                const gainMain = ctx.createGain();
+                oscMain.type = 'sine';
+                // 搥頭撞擊瞬間自然微小下沉 (僅在 10ms 內沉降 14Hz，模擬實木受力回彈)
+                oscMain.frequency.setValueAtTime(baseFreq + 16, now);
+                oscMain.frequency.exponentialRampToValueAtTime(baseFreq, now + 0.012);
 
-                filter.type = 'bandpass';
-                filter.frequency.setValueAtTime(800, now);
-                filter.Q.setValueAtTime(4.0, now);
+                gainMain.gain.setValueAtTime(0.85, now);
+                gainMain.gain.exponentialRampToValueAtTime(0.0001, now + 0.28);
+                oscMain.connect(gainMain);
+                oscMain.start(now);
+                oscMain.stop(now + 0.30);
 
-                gain.gain.setValueAtTime(0.9, now);
-                gain.gain.exponentialRampToValueAtTime(0.001, now + 0.16);
+                // 2. 木身硬質泛音 (表現古木殼體的硬質「木質」色調)
+                const oscWood = ctx.createOscillator();
+                const gainWood = ctx.createGain();
+                oscWood.type = 'sine';
+                oscWood.frequency.setValueAtTime(woodHarmonic, now);
+                gainWood.gain.setValueAtTime(0.35, now);
+                gainWood.gain.exponentialRampToValueAtTime(0.0001, now + 0.08);
+                oscWood.connect(gainWood);
+                oscWood.start(now);
+                oscWood.stop(now + 0.09);
 
-                osc.connect(filter);
-                filter.connect(gain);
-                gain.connect(ctx.destination);
+                // 3. 敲擊接觸瞬態 (Mallet Impact Transient，布裹木槌敲擊實木殼時的短促「嗒」實感)
+                const bufferSize = Math.floor(ctx.sampleRate * 0.015); // 15ms 瞬態
+                const noiseBuffer = ctx.createBuffer(1, bufferSize, ctx.sampleRate);
+                const noiseData = noiseBuffer.getChannelData(0);
+                for (let i = 0; i < bufferSize; i++) {
+                    noiseData[i] = (Math.random() * 2 - 1) * Math.exp(-i / (bufferSize * 0.22));
+                }
+                const noiseSrc = ctx.createBufferSource();
+                noiseSrc.buffer = noiseBuffer;
 
-                osc.start(now);
-                osc.stop(now + 0.18);
+                const impactFilter = ctx.createBiquadFilter();
+                impactFilter.type = 'bandpass';
+                impactFilter.frequency.setValueAtTime(1100, now);
+                impactFilter.Q.setValueAtTime(2.2, now);
+
+                const impactGain = ctx.createGain();
+                impactGain.gain.setValueAtTime(0.48, now);
+                impactGain.gain.exponentialRampToValueAtTime(0.001, now + 0.015);
+
+                noiseSrc.connect(impactFilter);
+                impactFilter.connect(impactGain);
+                noiseSrc.start(now);
+                noiseSrc.stop(now + 0.02);
+
+                // 4. 總輸出低通濾波 (消除電子生硬感，帶來古剎禪房的溫暖沉厚感)
+                const masterFilter = ctx.createBiquadFilter();
+                masterFilter.type = 'lowpass';
+                masterFilter.frequency.setValueAtTime(1500, now);
+
+                gainMain.connect(masterFilter);
+                gainWood.connect(masterFilter);
+                impactGain.connect(masterFilter);
+
+                masterFilter.connect(ctx.destination);
 
                 if (navigator.vibrate) {
-                    navigator.vibrate(12);
+                    navigator.vibrate(10);
                 }
             } catch (e) {
-                console.warn('Audio error:', e);
+                console.warn('Wooden fish audio error:', e);
             }
         }
 
@@ -1901,6 +1944,19 @@
             document.querySelectorAll('.chapter-section').forEach(sec => sectionObserver.observe(sec));
         }
 
+        // 念誦速度檔位設定 (單位: 像素/秒, 精準考量字字持誦讀速，基於時間戳記計算，不受 60Hz/120Hz 影響)
+        // 經文一行約 50px，1 行約 14~18 字
+        const SCROLL_SPEEDS = [
+            { level: 1, pxPerSec: 3.5, label: '極緩・一字一磬 (約14秒/行)' },
+            { level: 2, pxPerSec: 6.5, label: '緩速・隨文入觀 (約8秒/行)' },
+            { level: 3, pxPerSec: 12.0, label: '中速・日常持誦 (約4秒/行)' },
+            { level: 4, pxPerSec: 22.0, label: '流暢・熟誦如流 (約2.3秒/行)' },
+            { level: 5, pxPerSec: 38.0, label: '快讀・目視檢索 (約1.3秒/行)' }
+        ];
+
+        let lastScrollTimestamp = 0;
+        let scrollFractionAccumulator = 0;
+
         // 自動平穩滾動
         function toggleAutoScroll() {
             state.isAutoScrolling = !state.isAutoScrolling;
@@ -1913,7 +1969,8 @@
                 panel.classList.add('show');
                 icon.innerHTML = '<rect x="6" y="4" width="4" height="16"></rect><rect x="14" y="4" width="4" height="16"></rect>';
                 startAutoScrollLoop();
-                showToast('已開啟自動平穩滾動');
+                const speedObj = SCROLL_SPEEDS[state.scrollSpeed - 1] || SCROLL_SPEEDS[0];
+                showToast(`已開啟自動滾動：${speedObj.label}`);
             } else {
                 btn.classList.remove('primary');
                 panel.classList.remove('show');
@@ -1924,12 +1981,26 @@
         }
 
         function startAutoScrollLoop() {
-            function step() {
-                if (!state.isAutoScrolling) return;
-                const delta = state.scrollSpeed * 0.55;
-                window.scrollBy(0, delta);
+            lastScrollTimestamp = performance.now();
+            scrollFractionAccumulator = 0;
 
-                if ((window.innerHeight + window.scrollY) >= document.body.offsetHeight - 6) {
+            function step(timestamp) {
+                if (!state.isAutoScrolling) return;
+
+                const dt = Math.min(timestamp - lastScrollTimestamp, 100); // 避免切換分頁回到頁面時突跳
+                lastScrollTimestamp = timestamp;
+
+                const speedObj = SCROLL_SPEEDS[state.scrollSpeed - 1] || SCROLL_SPEEDS[0];
+                const deltaPx = (speedObj.pxPerSec * dt) / 1000;
+
+                scrollFractionAccumulator += deltaPx;
+                if (scrollFractionAccumulator >= 1) {
+                    const toMove = Math.floor(scrollFractionAccumulator);
+                    window.scrollBy(0, toMove);
+                    scrollFractionAccumulator -= toMove;
+                }
+
+                if ((window.innerHeight + window.scrollY) >= document.body.offsetHeight - 8) {
                     toggleAutoScroll();
                     showToast('誦經已圓滿至文末');
                     return;
@@ -1941,8 +2012,10 @@
         }
 
         function adjustScrollSpeed(delta) {
-            state.scrollSpeed = Math.max(1, Math.min(5, state.scrollSpeed + delta));
+            state.scrollSpeed = Math.max(1, Math.min(SCROLL_SPEEDS.length, state.scrollSpeed + delta));
+            const speedObj = SCROLL_SPEEDS[state.scrollSpeed - 1];
             document.getElementById('scrollSpeedText').textContent = `速 ${state.scrollSpeed}`;
+            showToast(`念誦速度：速 ${state.scrollSpeed}・${speedObj.label}`);
         }
 
         // 電子木魚敲擊
