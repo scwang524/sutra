@@ -33,7 +33,7 @@
             --font-size: 24px;
             --line-height: 2.1;
             --letter-spacing: 0.05em;
-            --font-family: 'Noto Serif TC', 'Songti TC', serif;
+            --font-family: 'Noto Sans TC', sans-serif;
             --safe-top: env(safe-area-inset-top, 0px);
             --safe-bottom: env(safe-area-inset-bottom, 0px);
             --safe-left: env(safe-area-inset-left, 0px);
@@ -550,14 +550,34 @@
             display: inline-flex;
             align-items: center;
         }
+        body.layout-vertical {
+            overflow: hidden !important;
+            height: 100vh !important;
+            height: 100dvh !important;
+            width: 100vw !important;
+        }
+
         .reading-vertical .sutra-sub-heading {
-            margin: 0 16px 0 20px;
-            height: auto;
+            margin: 0 8px 0 10px;
+            height: 100%;
+            display: inline-block;
+            vertical-align: top;
             writing-mode: vertical-rl;
+            text-align: start;
+            padding-top: 6px;
         }
         .reading-vertical .sutra-sub-heading .sub-tag {
-            letter-spacing: 0.18em;
-            padding: 16px 4px;
+            display: inline-block;
+            writing-mode: vertical-rl;
+            letter-spacing: 0.16em;
+            padding: 12px 4px;
+            font-size: 13.5px;
+            margin: 4px 0;
+        }
+        .reading-vertical .sutra-sub-heading .sub-heading-wing {
+            display: inline-block;
+            writing-mode: vertical-rl;
+            margin: 2px 0;
         }
 
         /* 罕見字/梵音注音 (Ruby) */
@@ -575,26 +595,45 @@
         }
 
         /* 古風直排模式 (Vertical Reading) */
-        .reading-vertical {
-            overflow-x: auto;
-            overflow-y: hidden;
-            height: calc(100vh - 120px);
-            height: calc(100dvh - 120px);
-            max-width: 100vw;
-            padding: 14px calc(20px + var(--safe-left));
-            margin-top: calc(96px + var(--safe-top));
+        .reader-container.reading-vertical {
+            position: fixed !important;
+            top: calc(134px + var(--safe-top)) !important;
+            bottom: 0 !important;
+            left: 0 !important;
+            right: 0 !important;
+            min-height: 0 !important;
+            max-width: 100vw !important;
+            width: 100vw !important;
+            height: auto !important;
+            margin: 0 !important;
+            padding: 26px calc(36px + var(--safe-right)) 22px calc(36px + var(--safe-left)) !important;
+            overflow-x: auto !important;
+            overflow-y: hidden !important;
             direction: rtl; /* 從右向左讀 */
             -webkit-overflow-scrolling: touch;
+            box-shadow: none;
+            box-sizing: border-box;
+            user-select: text;
         }
-        body.has-roll-bar .reading-vertical {
-            margin-top: calc(132px + var(--safe-top));
-            height: calc(100vh - 156px);
-            height: calc(100dvh - 156px);
+        body.zen-mode .reader-container.reading-vertical {
+            top: calc(14px + var(--safe-top)) !important;
+            bottom: calc(14px + var(--safe-bottom)) !important;
+            padding-top: 18px !important;
+            padding-bottom: 18px !important;
         }
-        body.zen-mode .reading-vertical {
-            margin-top: calc(20px + var(--safe-top));
-            height: calc(100vh - 40px);
-            height: calc(100dvh - 40px);
+        .reading-vertical::-webkit-scrollbar {
+            height: 9px;
+        }
+        .reading-vertical::-webkit-scrollbar-track {
+            background: var(--bg-card-subtle);
+            border-radius: 4px;
+        }
+        .reading-vertical::-webkit-scrollbar-thumb {
+            background: var(--border-highlight);
+            border-radius: 4px;
+        }
+        .reading-vertical::-webkit-scrollbar-thumb:hover {
+            background: var(--accent);
         }
         .reading-vertical #scriptureContentArea {
             writing-mode: vertical-rl;
@@ -607,14 +646,272 @@
             display: inline-block;
             vertical-align: top;
             height: 100%;
-            margin-left: 32px;
+            margin-left: 20px;
             margin-bottom: 0;
-            scroll-margin-top: 0;
+            scroll-margin: 0 20px;
+        }
+        .reading-vertical .chapter-body {
+            display: inline-block;
+            vertical-align: top;
+            height: 100%;
         }
         .reading-vertical .sutra-p {
             margin-left: 1.2em;
             margin-bottom: 0;
-            height: 85%;
+            height: 100%;
+            display: inline-block;
+            vertical-align: top;
+            writing-mode: vertical-rl;
+            line-height: var(--line-height);
+            letter-spacing: var(--letter-spacing);
+            text-align: justify;
+            text-justify: inter-ideograph;
+        }
+        .reading-vertical .sutra-verse {
+            height: 100%;
+            display: inline-block;
+            vertical-align: top;
+            writing-mode: vertical-rl;
+            margin: 0 8px;
+            padding: 14px 10px;
+            border-left: none;
+            border-right: none;
+            border-top: 2px solid var(--accent);
+            border-bottom: 2px solid var(--accent);
+            line-height: var(--line-height);
+            background-color: var(--bg-card-subtle);
+            border-radius: 6px;
+            text-align: start !important;
+        }
+        .reading-vertical .chapter-block-card {
+            height: 100%;
+            display: inline-flex;
+            flex-direction: column;
+            justify-content: flex-start;
+            align-items: center;
+            writing-mode: vertical-rl;
+            margin: 0 10px 0 0;
+            padding: 20px 10px;
+            vertical-align: top;
+            background: var(--bg-card);
+            border: 1px solid var(--border-subtle);
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(60, 48, 32, 0.04);
+        }
+        .reading-vertical .chapter-heading {
+            writing-mode: vertical-rl;
+            letter-spacing: 0.15em;
+            font-size: calc(var(--font-size) * 1.15);
+            margin: 8px 0;
+            line-height: 1.4;
+            color: var(--accent);
+            font-weight: 800;
+        }
+        .reading-vertical .chapter-block-badge {
+            writing-mode: vertical-rl;
+            letter-spacing: 0.15em;
+            padding: 10px 5px;
+            margin-bottom: 8px;
+            border-radius: 8px;
+            font-size: 11.5px;
+            background: var(--gold-bg);
+            color: var(--gold);
+            border: 1px solid var(--border-highlight);
+            font-weight: 700;
+        }
+        .reading-vertical .chapter-block-decor {
+            writing-mode: vertical-rl;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 6px;
+            margin-top: 8px;
+            color: var(--border-highlight);
+            font-size: 11px;
+        }
+        .reading-vertical .chapter-block-decor .decor-line {
+            width: 1px;
+            height: 28px;
+            background: linear-gradient(to bottom, transparent, var(--border-highlight), transparent);
+        }
+        .reading-vertical .chapter-block-footer {
+            height: 100%;
+            display: inline-flex;
+            flex-direction: column;
+            justify-content: flex-start;
+            align-items: center;
+            writing-mode: vertical-rl;
+            margin: 0 0 0 14px;
+            padding: 20px 8px;
+            border-top: none;
+            border-bottom: none;
+            border-left: 1px dashed var(--border-subtle);
+            border-right: 1px dashed var(--border-subtle);
+            vertical-align: top;
+        }
+        .reading-vertical .chapter-block-footer span {
+            padding: 14px 4px;
+            letter-spacing: 0.15em;
+            font-size: 12px;
+            color: var(--text-light);
+            background: var(--bg-card-subtle);
+            border-radius: 10px;
+        }
+        .reading-vertical .scripture-header-art {
+            height: 100%;
+            display: inline-flex;
+            flex-direction: column;
+            justify-content: flex-start;
+            align-items: center;
+            writing-mode: vertical-rl;
+            padding: 20px 14px;
+            border-bottom: none;
+            border-left: 1px dashed var(--border-subtle);
+            margin-bottom: 0;
+            margin-left: 14px;
+            vertical-align: top;
+        }
+        .reading-vertical .scripture-header-art .seal-stamp {
+            writing-mode: vertical-rl;
+            padding: 10px 4px;
+            margin-bottom: 0;
+            margin-left: 6px;
+            letter-spacing: 0.2em;
+        }
+        .reading-vertical .scripture-header-art .main-sutra-title {
+            writing-mode: vertical-rl;
+            font-size: 26px;
+            letter-spacing: 0.16em;
+            margin: 10px 0;
+        }
+        .reading-vertical .scripture-header-art .sutra-subtitle {
+            writing-mode: vertical-rl;
+            letter-spacing: 0.1em;
+            margin: 6px 0;
+        }
+        .reading-vertical .scripture-header-art .sutra-blessing-pill {
+            writing-mode: vertical-rl;
+            padding: 14px 5px;
+            letter-spacing: 0.15em;
+            margin-top: 8px;
+        }
+        .reading-vertical .roll-divider-header {
+            height: 100%;
+            display: inline-flex;
+            flex-direction: column;
+            justify-content: flex-start;
+            align-items: center;
+            writing-mode: vertical-rl;
+            margin: 0 10px;
+            padding: 20px 10px;
+            vertical-align: top;
+            background: var(--bg-card-subtle);
+            border-radius: 8px;
+            border: 1px solid var(--border-subtle);
+        }
+        .reading-vertical .roll-divider-header h3 {
+            font-size: 19px;
+            color: var(--gold);
+            letter-spacing: 0.2em;
+            margin-bottom: 0;
+            margin-left: 6px;
+        }
+        .reading-vertical .roll-divider-header p {
+            font-size: 12px;
+            color: var(--text-sub);
+            letter-spacing: 0.1em;
+        }
+
+        /* 直式卷軸左右翻頁控制 (電腦版與大螢幕) */
+        .vertical-nav-container {
+            display: none;
+            pointer-events: none;
+        }
+        body.layout-vertical .vertical-nav-container {
+            display: block;
+        }
+        .v-pager-btn {
+            position: fixed;
+            top: 52%;
+            transform: translateY(-50%);
+            background: var(--bg-card);
+            border: 1.5px solid var(--border-highlight);
+            color: var(--text-main);
+            border-radius: 28px;
+            padding: 14px 10px;
+            cursor: pointer;
+            z-index: 92;
+            pointer-events: auto;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 4px;
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.12);
+            transition: all 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+            user-select: none;
+            opacity: 0.88;
+            min-width: 48px;
+        }
+        .v-pager-btn:hover {
+            opacity: 1;
+            background: var(--bg-card-subtle);
+            border-color: var(--accent);
+            color: var(--accent);
+            transform: translateY(-50%) scale(1.06);
+            box-shadow: 0 8px 26px rgba(154, 40, 41, 0.2);
+        }
+        .v-pager-btn:active {
+            transform: translateY(-50%) scale(0.93);
+        }
+        .v-pager-btn.pager-next {
+            left: calc(14px + var(--safe-left));
+        }
+        .v-pager-btn.pager-prev {
+            right: calc(14px + var(--safe-right));
+        }
+        .v-pager-arrow {
+            font-size: 16px;
+            font-weight: 700;
+            color: var(--accent);
+        }
+        .v-pager-text {
+            font-size: 13px;
+            font-weight: 700;
+            letter-spacing: 0.12em;
+            writing-mode: vertical-rl;
+            margin: 2px 0;
+        }
+        .v-pager-shortcut {
+            font-size: 10px;
+            color: var(--text-light);
+            font-family: sans-serif;
+            margin-top: 2px;
+            white-space: nowrap;
+        }
+        body.zen-mode .v-pager-btn {
+            opacity: 0.3;
+        }
+        body.zen-mode .v-pager-btn:hover {
+            opacity: 0.95;
+        }
+        @media (max-width: 600px) {
+            .v-pager-btn {
+                padding: 8px 6px;
+                min-width: 36px;
+                opacity: 0.65;
+            }
+            .v-pager-shortcut {
+                display: none;
+            }
+            .v-pager-text {
+                font-size: 11px;
+            }
+        }
+        @media (max-width: 400px) {
+            .v-pager-btn {
+                display: none;
+            }
         }
 
         /* 右下角浮動快捷工具組 */
@@ -1243,27 +1540,20 @@
         }
     </style>
 </head>
-<body class="theme-ricepaper has-roll-bar">
+<body class="theme-ricepaper has-roll-bar layout-vertical">
     <!-- 頂部進度條 -->
     <div class="reading-progress-bar" id="readingProgressBar"></div>
 
     <!-- 頂部主導航欄 -->
     <header class="app-header" id="appHeader">
         <div class="header-left">
-            <button class="icon-btn" id="btnOpenMenu" title="打開目錄" onclick="openTocDrawer()">
+            <button class="icon-btn" id="btnOpenMenu" title="經文目錄" onclick="openTocDrawer()">
                 <svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                     <line x1="3" y1="12" x2="21" y2="12"></line>
                     <line x1="3" y1="6" x2="21" y2="6"></line>
                     <line x1="3" y1="18" x2="21" y2="18"></line>
                 </svg>
             </button>
-            <div class="header-title-pill" onclick="openTocDrawer()">
-                <span style="color:var(--accent);">❖</span>
-                <span class="pill-text" id="headerTitleText">地藏菩薩本願經</span>
-                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <polyline points="6 9 12 15 18 9"></polyline>
-                </svg>
-            </div>
         </div>
 
         <div class="header-right">
@@ -1351,9 +1641,23 @@
     </button>
 
     <!-- 經文主內容容器 -->
-    <main class="reader-container" id="readerContainer">
+    <main class="reader-container reading-vertical" id="readerContainer">
         <div id="scriptureContentArea"></div>
     </main>
+
+    <!-- 直式卷軸左右翻頁控制 (電腦版與大螢幕) -->
+    <div class="vertical-nav-container" id="verticalNavControls">
+        <button class="v-pager-btn pager-next" id="btnPagerNext" onclick="turnVerticalPage('next')" title="下一頁 (快速鍵: 滑鼠滾輪向下 / 鍵盤 ← / 空白鍵)">
+            <span class="v-pager-arrow">❮</span>
+            <span class="v-pager-text">下一頁</span>
+            <span class="v-pager-shortcut">← / Space</span>
+        </button>
+        <button class="v-pager-btn pager-prev" id="btnPagerPrev" onclick="turnVerticalPage('prev')" title="上一頁 (快速鍵: 滑鼠滾輪向上 / 鍵盤 → / Shift+空白鍵)">
+            <span class="v-pager-arrow">❯</span>
+            <span class="v-pager-text">上一頁</span>
+            <span class="v-pager-shortcut">→</span>
+        </button>
+    </div>
 
     <!-- 右下角浮動快捷工具組 -->
     <div class="floating-action-cluster" id="floatingActions">
@@ -1486,8 +1790,8 @@
             <div class="setting-section">
                 <div class="setting-label">閱讀排版方向</div>
                 <div class="btn-toggle-group">
-                    <button class="toggle-btn active" id="layout-horizontal" onclick="setLayout('horizontal')">橫排現代閱讀</button>
-                    <button class="toggle-btn" id="layout-vertical" onclick="setLayout('vertical')">古風直排卷軸</button>
+                    <button class="toggle-btn" id="layout-horizontal" onclick="setLayout('horizontal')">橫排現代閱讀</button>
+                    <button class="toggle-btn active" id="layout-vertical" onclick="setLayout('vertical')">古風直排卷軸</button>
                 </div>
             </div>
 
@@ -1495,9 +1799,9 @@
             <div class="setting-section">
                 <div class="setting-label">典籍字體風格</div>
                 <div class="btn-toggle-group">
-                    <button class="toggle-btn active" id="font-serif" onclick="setFontFamily('serif')">思源宋體</button>
+                    <button class="toggle-btn" id="font-serif" onclick="setFontFamily('serif')">思源宋體</button>
                     <button class="toggle-btn" id="font-kaiti" onclick="setFontFamily('kaiti')">霞鶩文楷</button>
-                    <button class="toggle-btn" id="font-sans" onclick="setFontFamily('sans')">現代黑體</button>
+                    <button class="toggle-btn active" id="font-sans" onclick="setFontFamily('sans')">現代黑體</button>
                 </div>
             </div>
 
@@ -1581,8 +1885,8 @@
             theme: 'theme-ricepaper',
             fontSize: 24,
             lineHeight: 2.1,
-            layout: 'horizontal',
-            fontFamily: 'serif',
+            layout: 'vertical',
+            fontFamily: 'sans',
             isZenMode: false,
             isAutoScrolling: false,
             scrollSpeed: 2,
@@ -1719,10 +2023,15 @@
 
         // 頁面初始化
         window.addEventListener('DOMContentLoaded', () => {
+            if ('scrollRestoration' in history) {
+                history.scrollRestoration = 'manual';
+            }
+            window.scrollTo(0, 0);
             loadPreferences();
             renderScripture(state.currentSutraId);
             setupScrollListener();
-            setupIntersectionObserver();
+            updateActiveChapter();
+            setupDesktopVerticalNavigation();
         });
 
         // 載入偏好設定
@@ -1743,11 +2052,11 @@
                 const savedLh = localStorage.getItem('sutra_lineheight');
                 if (savedLh) setLineHeight(savedLh, false);
 
-                const savedLayout = localStorage.getItem('sutra_layout');
-                if (savedLayout) setLayout(savedLayout, false);
+                const savedLayout = localStorage.getItem('sutra_layout') || 'vertical';
+                setLayout(savedLayout, false);
 
-                const savedFont = localStorage.getItem('sutra_font');
-                if (savedFont) setFontFamily(savedFont, false);
+                const savedFont = localStorage.getItem('sutra_font') || 'sans';
+                setFontFamily(savedFont, false);
 
                 const savedMuyu = localStorage.getItem('sutra_muyu_count');
                 if (savedMuyu) {
@@ -1757,10 +2066,19 @@
 
                 // 恢復歷史滾動位置
                 setTimeout(() => {
-                    const savedScroll = localStorage.getItem('sutra_scroll_' + state.currentSutraId);
-                    if (savedScroll && parseInt(savedScroll, 10) > 20) {
-                        window.scrollTo({ top: parseInt(savedScroll, 10), behavior: 'smooth' });
-                        showToast('已為您恢復閱讀進度');
+                    if (state.layout === 'vertical') {
+                        const savedScroll = localStorage.getItem('sutra_scroll_v_' + state.currentSutraId);
+                        const container = document.getElementById('readerContainer');
+                        if (container && savedScroll && parseInt(savedScroll, 10) > 20) {
+                            container.scrollTo({ left: -parseInt(savedScroll, 10), behavior: 'smooth' });
+                            showToast('已為您恢復閱讀進度');
+                        }
+                    } else {
+                        const savedScroll = localStorage.getItem('sutra_scroll_' + state.currentSutraId);
+                        if (savedScroll && parseInt(savedScroll, 10) > 20) {
+                            window.scrollTo({ top: parseInt(savedScroll, 10), behavior: 'smooth' });
+                            showToast('已為您恢復閱讀進度');
+                        }
                     }
                 }, 350);
 
@@ -1876,8 +2194,8 @@
             // 重新刷新目錄
             renderTocDrawer();
 
-            // 重新初始化 IntersectionObserver 監聽
-            setTimeout(setupIntersectionObserver, 200);
+            // 延遲更新章節位置判定
+            setTimeout(updateActiveChapter, 150);
         }
 
         // 取得章節品目的莊嚴標籤
@@ -1949,9 +2267,11 @@
             return chap.title.substring(0, 6);
         }
 
-        // 更新 Header 標題顯示
+        // 更新 Header 標題與瀏覽器標籤頁顯示
         function updateHeaderTitle(title) {
-            document.getElementById('headerTitleText').textContent = title;
+            const el = document.getElementById('headerTitleText');
+            if (el) el.textContent = title;
+            document.title = `${title} · 誦經修心`;
         }
 
         // 渲染段落並處理注音與專屬子區塊獨立標題
@@ -1959,10 +2279,11 @@
             return paragraphs.map(p => {
                 let subHeadingHtml = '';
                 let content = p.trim();
+                let headingText = '';
 
                 const headingMatch = content.match(/^【([^】]+)】\s*\n?([\s\S]*)$/);
                 if (headingMatch) {
-                    const headingText = headingMatch[1].trim();
+                    headingText = headingMatch[1].trim();
                     content = headingMatch[2].trim();
                     subHeadingHtml = `
                         <div class="sutra-sub-heading" data-subheading="${headingText}">
@@ -1977,7 +2298,13 @@
                     return subHeadingHtml;
                 }
 
-                const isVerse = content.includes('\n') || content.includes('南無') || (content.length < 55 && !content.endsWith('。'));
+                const isVerse = content.includes('\n') || 
+                                content.includes('南無') || 
+                                headingText.includes('讚') || 
+                                headingText.includes('偈') || 
+                                headingText.includes('真言') || 
+                                headingText.includes('咒') ||
+                                (content.length < 55 && !content.endsWith('。') && !content.endsWith('」') && !content.endsWith('』') && !content.endsWith('：'));
                 let formatted = content.replace(/\n/g, '<br>');
                 formatted = enrichWithPinyin(formatted);
 
@@ -2025,7 +2352,12 @@
                 stopAutoScroll();
             }
             renderScripture(sutraId);
-            window.scrollTo({ top: 0, behavior: 'auto' });
+            if (state.layout === 'vertical') {
+                const container = document.getElementById('readerContainer');
+                if (container) container.scrollTo({ left: 0, behavior: 'auto' });
+            } else {
+                window.scrollTo({ top: 0, behavior: 'auto' });
+            }
             showToast(`已切換至《${SCRIPTURES_DATA[sutraId].title}》`);
             closeAllDrawers();
         }
@@ -2048,15 +2380,25 @@
         function scrollToRoll(rollId) {
             const el = document.getElementById(rollId);
             if (el) {
-                const offset = getHeaderOffset();
-                const targetY = Math.max(0, el.getBoundingClientRect().top + window.scrollY - offset);
-
-                if (state.isAutoScrolling) {
-                    window.scrollTo({ top: targetY, behavior: 'auto' });
-                    lastScrollTimestamp = performance.now();
-                    scrollFractionAccumulator = 0;
+                if (state.layout === 'vertical') {
+                    const container = document.getElementById('readerContainer');
+                    if (container) {
+                        const elRect = el.getBoundingClientRect();
+                        const containerRect = container.getBoundingClientRect();
+                        const delta = elRect.right - (containerRect.right - 36);
+                        container.scrollBy({ left: delta, behavior: state.isAutoScrolling ? 'auto' : 'smooth' });
+                    }
                 } else {
-                    window.scrollTo({ top: targetY, behavior: 'smooth' });
+                    const offset = getHeaderOffset();
+                    const targetY = Math.max(0, el.getBoundingClientRect().top + window.scrollY - offset);
+
+                    if (state.isAutoScrolling) {
+                        window.scrollTo({ top: targetY, behavior: 'auto' });
+                        lastScrollTimestamp = performance.now();
+                        scrollFractionAccumulator = 0;
+                    } else {
+                        window.scrollTo({ top: targetY, behavior: 'smooth' });
+                    }
                 }
                 updateRollPillActive(rollId);
             }
@@ -2140,77 +2482,203 @@
             const el = document.getElementById(chapId);
             if (el) {
                 closeAllDrawers();
-                const offset = getHeaderOffset();
-                const targetY = Math.max(0, el.getBoundingClientRect().top + window.scrollY - offset);
-
-                if (state.isAutoScrolling) {
-                    window.scrollTo({ top: targetY, behavior: 'auto' });
-                    lastScrollTimestamp = performance.now();
-                    scrollFractionAccumulator = 0;
+                if (state.layout === 'vertical') {
+                    const container = document.getElementById('readerContainer');
+                    if (container) {
+                        const elRect = el.getBoundingClientRect();
+                        const containerRect = container.getBoundingClientRect();
+                        const delta = elRect.right - (containerRect.right - 36);
+                        container.scrollBy({ left: delta, behavior: state.isAutoScrolling ? 'auto' : 'smooth' });
+                    }
                 } else {
-                    window.scrollTo({ top: targetY, behavior: 'smooth' });
+                    const offset = getHeaderOffset();
+                    const targetY = Math.max(0, el.getBoundingClientRect().top + window.scrollY - offset);
+
+                    if (state.isAutoScrolling) {
+                        window.scrollTo({ top: targetY, behavior: 'auto' });
+                        lastScrollTimestamp = performance.now();
+                        scrollFractionAccumulator = 0;
+                    } else {
+                        window.scrollTo({ top: targetY, behavior: 'smooth' });
+                    }
                 }
 
+                applyActiveSection(el);
                 const title = el.dataset.title || '章節';
                 showToast(`已跳轉至「${title}」`);
-                updateHeaderTitle(`${SCRIPTURES_DATA[state.currentSutraId].shortTitle || SCRIPTURES_DATA[state.currentSutraId].title} · ${title}`);
             }
         }
 
         // 滾動監聽（進度條與歷史儲存）
-        function setupScrollListener() {
-            let scrollTimer = null;
-            window.addEventListener('scroll', () => {
+        let scrollTimer = null;
+        function updateProgressAndSave() {
+            if (state.layout === 'vertical') {
+                const container = document.getElementById('readerContainer');
+                if (container) {
+                    const maxScroll = container.scrollWidth - container.clientWidth;
+                    const currentScroll = Math.abs(container.scrollLeft);
+                    const percent = maxScroll > 0 ? Math.min(100, Math.max(0, (currentScroll / maxScroll) * 100)) : 0;
+                    const bar = document.getElementById('readingProgressBar');
+                    if (bar) bar.style.width = percent + '%';
+
+                    clearTimeout(scrollTimer);
+                    scrollTimer = setTimeout(() => {
+                        localStorage.setItem('sutra_scroll_v_' + state.currentSutraId, currentScroll);
+                    }, 500);
+                }
+            } else {
                 const totalHeight = document.documentElement.scrollHeight - window.innerHeight;
                 if (totalHeight > 0) {
                     const percent = Math.min(100, Math.max(0, (window.scrollY / totalHeight) * 100));
-                    document.getElementById('readingProgressBar').style.width = percent + '%';
+                    const bar = document.getElementById('readingProgressBar');
+                    if (bar) bar.style.width = percent + '%';
                 }
 
                 clearTimeout(scrollTimer);
                 scrollTimer = setTimeout(() => {
                     localStorage.setItem('sutra_scroll_' + state.currentSutraId, window.scrollY);
                 }, 500);
-            }, { passive: true });
+            }
+
+            // 即時動態判定當前落在經文的哪個章節（順序讀來第一個從頭開始的章節）
+            updateActiveChapter();
         }
 
-        // IntersectionObserver 追蹤當前卷與品目
-        let sectionObserver = null;
-        function setupIntersectionObserver() {
-            if (sectionObserver) sectionObserver.disconnect();
+        function setupScrollListener() {
+            window.removeEventListener('scroll', updateProgressAndSave);
+            window.addEventListener('scroll', updateProgressAndSave, { passive: true });
 
-            sectionObserver = new IntersectionObserver((entries) => {
-                entries.forEach(entry => {
-                    if (entry.isIntersecting) {
-                        const rollId = entry.target.dataset.roll;
-                        const chapTitle = entry.target.dataset.title;
-                        const chapBadge = entry.target.dataset.badge;
-                        const chapId = entry.target.id;
+            const container = document.getElementById('readerContainer');
+            if (container) {
+                container.removeEventListener('scroll', updateProgressAndSave);
+                container.addEventListener('scroll', updateProgressAndSave, { passive: true });
+            }
+            updateActiveChapter();
+        }
 
-                        if (rollId) {
-                            updateRollPillActive(rollId);
-                        }
-                        if (chapTitle) {
-                            state.currentChapterTitle = chapTitle;
-                            const short = SCRIPTURES_DATA[state.currentSutraId].shortTitle || SCRIPTURES_DATA[state.currentSutraId].title;
-                            updateHeaderTitle(`${short} · ${chapBadge || chapTitle}`);
-                        }
+        // 判定當前版面所屬章節（依據：「目前版面上順序讀來第一個從頭開始的章節」）
+        let activeChapterRafId = null;
+        function updateActiveChapter() {
+            if (activeChapterRafId) return;
+            activeChapterRafId = requestAnimationFrame(() => {
+                activeChapterRafId = null;
+                calculateAndApplyActiveChapter();
+            });
+        }
 
-                        // 即時同步高亮頂部通用章節區塊膠囊列，並平滑滾動至可視中央
-                        if (chapId) {
-                            document.querySelectorAll('.section-pill-btn').forEach(btn => {
-                                btn.classList.toggle('active', btn.id === 'sec-pill-' + chapId);
-                            });
-                            const activeBtn = document.getElementById('sec-pill-' + chapId);
-                            if (activeBtn) {
-                                activeBtn.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
-                            }
+        function calculateAndApplyActiveChapter() {
+            const sections = Array.from(document.querySelectorAll('.chapter-section'));
+            if (!sections.length) return;
+
+            let activeSection = null;
+
+            if (state.layout === 'vertical') {
+                const container = document.getElementById('readerContainer');
+                if (!container) return;
+                const cRect = container.getBoundingClientRect();
+
+                // 直式閱讀順序：由右向左讀
+                // 視窗可視範圍橫向區間為 [cRect.left, cRect.right]
+                // 判斷原則：「目前版面上順序讀來第一個從頭開始的章節」
+                // 一個章節「從頭開始」的標誌為其起始端（右側邊界 r.right）落在當前可視畫面中
+                const startingSections = [];
+                for (const sec of sections) {
+                    const r = sec.getBoundingClientRect();
+                    // 在可視範圍內（右側起始端進入視窗至少 50px，且未超出右側邊界超過 30px）
+                    if (r.right <= cRect.right + 30 && r.right >= cRect.left + 50) {
+                        startingSections.push({ sec, startX: r.right });
+                    }
+                }
+
+                if (startingSections.length > 0) {
+                    // 順序讀來（由右至左）：startX 越大的越靠右（最先順序讀到的起始章節）
+                    startingSections.sort((a, b) => b.startX - a.startX);
+                    activeSection = startingSections[0].sec;
+                } else {
+                    // 若當前畫面上沒有任何章節是從頭開始的（畫面完全處於某長章節之中）
+                    // 則判定為覆蓋當前畫面閱讀起點（靠右區域）的章節
+                    for (const sec of sections) {
+                        const r = sec.getBoundingClientRect();
+                        if (r.right >= cRect.right - 50 && r.left <= cRect.right) {
+                            activeSection = sec;
+                            break;
                         }
                     }
-                });
-            }, { rootMargin: '-10% 0px -70% 0px' });
+                }
+            } else {
+                // 橫式閱讀順序：由上至下讀
+                // 視窗可視範圍縱向區間為 [headerOffset, window.innerHeight]
+                // 判斷原則：「目前版面上順序讀來第一個從頭開始的章節」
+                // 一個章節「從頭開始」的標誌為其頂端起始邊界 r.top 落在可視畫面中
+                const headerOffset = getHeaderOffset();
+                const viewportBottom = window.innerHeight;
 
-            document.querySelectorAll('.chapter-section').forEach(sec => sectionObserver.observe(sec));
+                const startingSections = [];
+                for (const sec of sections) {
+                    const r = sec.getBoundingClientRect();
+                    // 在可視範圍內（頂部起始端進入視窗至少 30px，且未超出頂部超過 20px）
+                    if (r.top >= headerOffset - 20 && r.top <= viewportBottom - 80) {
+                        startingSections.push({ sec, startY: r.top });
+                    }
+                }
+
+                if (startingSections.length > 0) {
+                    // 順序讀來（由上至下）：startY 越小的越靠上（最先順序讀到的起始章節）
+                    startingSections.sort((a, b) => a.startY - b.startY);
+                    activeSection = startingSections[0].sec;
+                } else {
+                    // 若畫面上沒有章節開頭，判定為跨越頂部閱讀基準線的章節
+                    for (const sec of sections) {
+                        const r = sec.getBoundingClientRect();
+                        if (r.top <= headerOffset + 50 && r.bottom >= headerOffset) {
+                            activeSection = sec;
+                            break;
+                        }
+                    }
+                }
+            }
+
+            if (!activeSection && sections.length > 0) {
+                activeSection = sections[0];
+            }
+
+            applyActiveSection(activeSection);
+        }
+
+        function applyActiveSection(sec) {
+            if (!sec) return;
+            const rollId = sec.dataset.roll;
+            const chapTitle = sec.dataset.title;
+            const chapBadge = sec.dataset.badge;
+            const chapId = sec.id;
+
+            if (rollId) {
+                updateRollPillActive(rollId);
+            }
+
+            if (chapTitle && state.currentChapterTitle !== chapTitle) {
+                state.currentChapterTitle = chapTitle;
+                const short = SCRIPTURES_DATA[state.currentSutraId].shortTitle || SCRIPTURES_DATA[state.currentSutraId].title;
+                updateHeaderTitle(`${short} · ${chapBadge || chapTitle}`);
+            }
+
+            // 同步高亮頂部通用章節區塊膠囊列
+            if (chapId) {
+                let changed = false;
+                document.querySelectorAll('.section-pill-btn').forEach(btn => {
+                    const shouldBeActive = (btn.id === 'sec-pill-' + chapId);
+                    if (btn.classList.contains('active') !== shouldBeActive) {
+                        btn.classList.toggle('active', shouldBeActive);
+                        changed = true;
+                    }
+                });
+                if (changed) {
+                    const activeBtn = document.getElementById('sec-pill-' + chapId);
+                    if (activeBtn) {
+                        activeBtn.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
+                    }
+                }
+            }
         }
 
         // 念誦速度檔位設定 (單位: 像素/秒, 精準考量字字持誦讀速，基於時間戳記計算，不受 60Hz/120Hz 影響)
@@ -2277,19 +2745,141 @@
                 scrollFractionAccumulator += deltaPx;
                 if (scrollFractionAccumulator >= 1) {
                     const toMove = Math.floor(scrollFractionAccumulator);
-                    window.scrollBy(0, toMove);
                     scrollFractionAccumulator -= toMove;
-                }
 
-                if ((window.innerHeight + window.scrollY) >= document.body.offsetHeight - 8) {
-                    toggleAutoScroll();
-                    showToast('誦經已圓滿至文末');
-                    return;
+                    if (state.layout === 'vertical') {
+                        const container = document.getElementById('readerContainer');
+                        if (container) {
+                            // 在直排 RTL 模式下，向前閱讀向左捲動 (負向 X)
+                            container.scrollBy({ left: -toMove, behavior: 'auto' });
+                            updateProgressAndSave();
+
+                            const maxScroll = container.scrollWidth - container.clientWidth;
+                            const currentScroll = Math.abs(container.scrollLeft);
+                            if (currentScroll >= maxScroll - 6) {
+                                stopAutoScroll();
+                                showToast('誦經已圓滿至文末');
+                                return;
+                            }
+                        }
+                    } else {
+                        window.scrollBy(0, toMove);
+                        updateProgressAndSave();
+
+                        if ((window.innerHeight + window.scrollY) >= document.body.offsetHeight - 8) {
+                            stopAutoScroll();
+                            showToast('誦經已圓滿至文末');
+                            return;
+                        }
+                    }
                 }
 
                 state.autoScrollRafId = requestAnimationFrame(step);
             }
             state.autoScrollRafId = requestAnimationFrame(step);
+        }
+
+        // 直排模式翻頁（上一頁 / 下一頁）
+        function turnVerticalPage(direction) {
+            const container = document.getElementById('readerContainer');
+            if (!container) return;
+            const pageWidth = Math.max(280, container.clientWidth * 0.82);
+            if (direction === 'next') {
+                // 下一頁：向左前進
+                container.scrollBy({ left: -pageWidth, behavior: 'smooth' });
+            } else {
+                // 上一頁：向右返回
+                container.scrollBy({ left: pageWidth, behavior: 'smooth' });
+            }
+            setTimeout(updateProgressAndSave, 350);
+        }
+
+        // 電腦版滾輪、鍵盤方向鍵與滑鼠拖曳翻頁支援
+        function setupDesktopVerticalNavigation() {
+            // 1. 滑鼠滾輪事件：垂直滾輪直接映射為直排水平捲動
+            window.addEventListener('wheel', (e) => {
+                if (state.layout !== 'vertical') return;
+                if (document.querySelector('.drawer-panel.open')) return;
+                const container = document.getElementById('readerContainer');
+                if (!container) return;
+
+                if (e.target.closest('.drawer-panel') || e.target.closest('.search-bar-modal') || e.target.closest('.section-pills-scroll')) {
+                    return;
+                }
+
+                let delta = e.deltaY;
+                if (Math.abs(e.deltaX) > Math.abs(e.deltaY)) {
+                    delta = e.deltaX;
+                }
+
+                if (Math.abs(delta) > 0) {
+                    e.preventDefault();
+                    // 滾輪向下(delta>0) -> 下一頁(向左負向捲動)
+                    const scrollAmount = delta * 1.5;
+                    container.scrollBy({ left: -scrollAmount, behavior: 'auto' });
+                    updateProgressAndSave();
+                }
+            }, { passive: false });
+
+            // 2. 鍵盤快捷鍵：方向鍵、PageUp/Down、空白鍵翻頁
+            window.addEventListener('keydown', (e) => {
+                if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
+                if (document.querySelector('.drawer-panel.open')) {
+                    if (e.key === 'Escape') closeAllDrawers();
+                    return;
+                }
+
+                if (state.layout === 'vertical') {
+                    if (e.key === 'ArrowLeft' || e.key === 'PageDown' || (e.key === ' ' && !e.shiftKey)) {
+                        e.preventDefault();
+                        turnVerticalPage('next');
+                    } else if (e.key === 'ArrowRight' || e.key === 'PageUp' || (e.key === ' ' && e.shiftKey)) {
+                        e.preventDefault();
+                        turnVerticalPage('prev');
+                    } else if (e.key === 'Home') {
+                        e.preventDefault();
+                        const container = document.getElementById('readerContainer');
+                        if (container) container.scrollTo({ left: 0, behavior: 'smooth' });
+                    } else if (e.key === 'End') {
+                        e.preventDefault();
+                        const container = document.getElementById('readerContainer');
+                        if (container) container.scrollTo({ left: -container.scrollWidth, behavior: 'smooth' });
+                    }
+                }
+            });
+
+            // 3. 電腦版滑鼠拖曳（抓取滑動）支援
+            const container = document.getElementById('readerContainer');
+            if (container) {
+                let isMouseDown = false;
+                let startX = 0;
+                let scrollLeftStart = 0;
+
+                container.addEventListener('mousedown', (e) => {
+                    if (state.layout !== 'vertical') return;
+                    if (e.button !== 0) return;
+                    if (e.target.closest('button') || e.target.closest('input') || e.target.closest('a')) return;
+                    isMouseDown = true;
+                    startX = e.pageX;
+                    scrollLeftStart = container.scrollLeft;
+                    container.style.cursor = 'grabbing';
+                });
+
+                window.addEventListener('mousemove', (e) => {
+                    if (!isMouseDown || state.layout !== 'vertical') return;
+                    e.preventDefault();
+                    const dx = e.pageX - startX;
+                    container.scrollLeft = scrollLeftStart - dx;
+                    updateProgressAndSave();
+                });
+
+                window.addEventListener('mouseup', () => {
+                    if (isMouseDown) {
+                        isMouseDown = false;
+                        container.style.cursor = '';
+                    }
+                });
+            }
         }
 
         function adjustScrollSpeed(delta) {
@@ -2430,17 +3020,23 @@
         function setLayout(layoutType, save = true) {
             state.layout = layoutType;
             const container = document.getElementById('readerContainer');
+            document.body.classList.toggle('layout-vertical', layoutType === 'vertical');
+            document.body.classList.toggle('layout-horizontal', layoutType === 'horizontal');
             if (layoutType === 'vertical') {
+                window.scrollTo(0, 0);
                 container.classList.add('reading-vertical');
                 document.getElementById('layout-vertical').classList.add('active');
                 document.getElementById('layout-horizontal').classList.remove('active');
-                showToast('已切換為古風直排卷軸（可向左滑動）');
+                showToast('已切換為古風直排卷軸（電腦可用滾輪、方向鍵或點擊翻頁）');
             } else {
                 container.classList.remove('reading-vertical');
                 document.getElementById('layout-horizontal').classList.add('active');
                 document.getElementById('layout-vertical').classList.remove('active');
             }
             if (save) localStorage.setItem('sutra_layout', layoutType);
+            setupScrollListener();
+            updateActiveChapter();
+            updateProgressAndSave();
         }
 
         // 字體風格
@@ -2529,14 +3125,18 @@
             document.getElementById('searchMatchCount').textContent = count > 0 ? `共 ${count} 處` : '未找到匹配';
             const firstMark = document.querySelector('mark.sutra-highlight');
             if (firstMark) {
-                const offset = getHeaderOffset() + 40;
-                const targetY = Math.max(0, firstMark.getBoundingClientRect().top + window.scrollY - offset);
-                if (state.isAutoScrolling) {
-                    window.scrollTo({ top: targetY, behavior: 'auto' });
-                    lastScrollTimestamp = performance.now();
-                    scrollFractionAccumulator = 0;
+                if (state.layout === 'vertical') {
+                    firstMark.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
                 } else {
-                    firstMark.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    const offset = getHeaderOffset() + 40;
+                    const targetY = Math.max(0, firstMark.getBoundingClientRect().top + window.scrollY - offset);
+                    if (state.isAutoScrolling) {
+                        window.scrollTo({ top: targetY, behavior: 'auto' });
+                        lastScrollTimestamp = performance.now();
+                        scrollFractionAccumulator = 0;
+                    } else {
+                        firstMark.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    }
                 }
             }
         }
